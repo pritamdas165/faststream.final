@@ -2,110 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Please wait...</title>
+  <title>Please Wait...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
+    body{
+      margin:0;
+      background:#0f0f0f;
+      color:#fff;
+      font-family:Arial;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      text-align:center;
     }
-
-    .box {
-      background: #1c1c1c;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 420px;
-      width: 90%;
+    .box{
+      background:#1c1c1c;
+      padding:25px;
+      border-radius:8px;
+      max-width:320px;
+      width:100%;
     }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    p {
-      opacity: 0.85;
-      margin-bottom: 20px;
-    }
-
-    .timer {
-      font-size: 28px;
-      margin: 20px 0;
-    }
-
-    button {
-      padding: 12px 20px;
-      border: none;
-      background: #e50914;
-      color: #fff;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: none;
-    }
-
-    button:hover {
-      background: #ff1e2d;
-    }
-
-    .ad-box {
-      background: #000;
-      height: 120px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #777;
-      font-size: 14px;
+    button{
+      padding:10px 15px;
+      border:none;
+      background:#e50914;
+      color:#fff;
+      border-radius:6px;
+      cursor:pointer;
+      margin-top:15px;
+      display:none;
     }
   </style>
 </head>
-
 <body>
-  <div class="box">
-    <h1>⏳ Please Wait</h1>
-    <p>You will be redirected shortly</p>
 
-    <!-- ADS AREA -->
-    <div class="ad-box">
-      Your Ads Will Show Here
-    </div>
+<div class="box">
+  <h2>Please wait...</h2>
+  <p>Redirecting in <span id="time">5</span> seconds</p>
 
-    <div class="timer" id="timer">5</div>
-
-    <button id="continueBtn">Continue</button>
+  <!-- এখানে চাইলে external ads script বসাতে পারো -->
+  <div style="margin:15px 0;background:#000;padding:10px">
+    ADS PLACEHOLDER
   </div>
 
-  <script>
-    // === CONFIG ===
-    const FINAL_URL = "https://example.com"; // <-- এখানে তোমার ads / offer link দেবে
-    let timeLeft = 5;
+  <button id="continueBtn">Continue</button>
+</div>
 
-    const timerEl = document.getElementById("timer");
-    const btn = document.getElementById("continueBtn");
-
-    const countdown = setInterval(() => {
-      timeLeft--;
-      timerEl.textContent = timeLeft;
-
-      if (timeLeft <= 0) {
-        clearInterval(countdown);
-        btn.style.display = "inline-block";
-        timerEl.style.display = "none";
-      }
-    }, 1000);
-
-    btn.addEventListener("click", () => {
-      window.location.href = FINAL_URL;
-    });
-  </script>
+<script src="js/redirect.js"></script>
 </body>
 </html>
