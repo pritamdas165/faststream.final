@@ -1,35 +1,30 @@
-const API_KEY = "cc9374659de08b939499a50af4715216";
-const BASE_URL = "https://api.themoviedb.org/3";
-const IMG_URL = "https://image.tmdb.org/t/p/w500";
+const movieList = document.getElementById("movieList");
 
-const moviesEl = document.getElementById("movies");
+/* Dummy movies (example) */
+const movies = [
+  { id: 1, title: "Movie One", poster: "assets/poster1.jpg" },
+  { id: 2, title: "Movie Two", poster: "assets/poster2.jpg" }
+];
 
-async function loadMovies() {
-  const res = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`);
-  const data = await res.json();
-  showMovies(data.results);
+/* Render movies */
+movies.forEach(movie => {
+  const card = document.createElement("div");
+  card.className = "movie-card";
+  card.innerHTML = `
+    <img src="${movie.poster}">
+    <h3>${movie.title}</h3>
+    <a href="movie.html?id=${movie.id}" class="primary-btn">View</a>
+  `;
+  movieList.appendChild(card);
+});
+
+/* ===== CONTINUE WATCHING LOGIC ===== */
+const lastMovie = JSON.parse(localStorage.getItem("lastWatched"));
+
+if (lastMovie) {
+  document.getElementById("continueSection").style.display = "block";
+  document.getElementById("continuePoster").src = lastMovie.poster;
+  document.getElementById("continueTitle").innerText = lastMovie.title;
+  document.getElementById("continueBtn").href =
+    `movie.html?id=${lastMovie.id}&continue=1`;
 }
-
-function showMovies(movies) {
-  moviesEl.innerHTML = "";
-
-  movies.forEach(movie => {
-    if (!movie.poster_path) return;
-
-    const div = document.createElement("div");
-    div.className = "movie";
-
-    div.innerHTML = `
-      <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
-      <h3>${movie.title}</h3>
-    `;
-
-    div.addEventListener("click", () => {
-      window.location.href = `movie.html?id=${movie.id}`;
-    });
-
-    moviesEl.appendChild(div);
-  });
-}
-
-loadMovies();
