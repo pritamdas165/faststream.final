@@ -1,29 +1,45 @@
- body {
-  margin: 0;
-  background: #0f0f0f;
-  color: #fff;
-  font-family: Arial, sans-serif;
+* {
+  box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  background: #0f0f0f;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER */
 header {
   background: #111;
-  padding: 15px;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-header a {
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+header nav a {
   color: #fff;
   text-decoration: none;
   margin-left: 15px;
+  font-size: 14px;
 }
 
+header nav a:hover {
+  color: #e50914;
+}
+
+/* MOVIE GRID */
 .movies {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 15px;
-  padding: 15px;
+  padding: 20px;
 }
 
 .movie {
@@ -31,11 +47,12 @@ header a {
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .movie:hover {
   transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
 .movie img {
@@ -46,4 +63,25 @@ header a {
 .movie h3 {
   font-size: 14px;
   padding: 8px;
+  margin: 0;
+  text-align: center;
+}
+
+/* DETAILS PAGE */
+main img {
+  margin: 15px 0;
+}
+
+button {
+  padding: 10px 16px;
+  background: #e50914;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  opacity: 0.9;
 }
