@@ -8,7 +8,7 @@ const watchBtn = document.getElementById("watchBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const favBtn = document.getElementById("favBtn");
 
-// Dummy movie data (demo purpose)
+// Demo movie data
 const movies = [
   {
     id: "1",
@@ -34,6 +34,19 @@ if (!movie) {
   overviewEl.innerText = movie.overview;
 }
 
+// ===== WATCH HISTORY SAVE =====
+let watchHistory = JSON.parse(localStorage.getItem("watchHistory")) || [];
+
+if (movie && !watchHistory.some(m => m.id === movie.id)) {
+  watchHistory.push({
+    id: movie.id,
+    title: movie.title,
+    poster: movie.poster_path
+  });
+
+  localStorage.setItem("watchHistory", JSON.stringify(watchHistory));
+}
+
 // Redirect logic
 watchBtn.onclick = () => {
   window.location.href = `redirect.html?type=watch&id=${movieId}`;
@@ -43,7 +56,7 @@ downloadBtn.onclick = () => {
   window.location.href = `redirect.html?type=download&id=${movieId}`;
 };
 
-// ================= FAVORITES SYSTEM =================
+// ===== FAVORITES SYSTEM =====
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
 function isFavorite(id) {
@@ -52,12 +65,9 @@ function isFavorite(id) {
 
 function updateFavButton() {
   if (!movie) return;
-
-  if (isFavorite(movie.id)) {
-    favBtn.innerText = "💔 Remove from Favorites";
-  } else {
-    favBtn.innerText = "❤️ Add to Favorites";
-  }
+  favBtn.innerText = isFavorite(movie.id)
+    ? "💔 Remove from Favorites"
+    : "❤️ Add to Favorites";
 }
 
 favBtn.onclick = () => {
