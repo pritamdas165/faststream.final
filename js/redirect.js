@@ -1,24 +1,27 @@
-const params = new URLSearchParams(window.location.search);
-const target = params.get("to"); // watch / download
-
-let time = 5;
 const timeEl = document.getElementById("time");
 const btn = document.getElementById("continueBtn");
 
-const timer = setInterval(() => {
-  time--;
-  timeEl.textContent = time;
+let timeLeft = 5;
 
-  if (time === 0) {
+const params = new URLSearchParams(window.location.search);
+const type = params.get("to"); // watch or download
+
+const timer = setInterval(() => {
+  timeLeft--;
+  timeEl.textContent = timeLeft;
+
+  if (timeLeft <= 0) {
     clearInterval(timer);
-    btn.style.display = "block";
+    btn.style.display = "inline-block";
   }
 }, 1000);
 
-btn.onclick = () => {
-  if (target === "watch") {
+btn.addEventListener("click", () => {
+  if (type === "watch") {
     window.location.href = "https://example.com/watch";
-  } else if (target === "download") {
+  } else if (type === "download") {
     window.location.href = "https://example.com/download";
+  } else {
+    window.location.href = "index.html";
   }
-};
+});
