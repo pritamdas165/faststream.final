@@ -1,94 +1,63 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FastStream – Movies</title>
+  <title>FastStream – Movie Discovery</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- SEO -->
-  <meta name="description" content="Watch trending, popular and latest movies online">
-  <meta name="keywords" content="movies, trending movies, latest movies">
+  <meta name="description" content="Discover trending, top rated and latest movies powered by TMDB API" />
+  <meta name="keywords" content="movies, tmdb, trending movies, watch movies" />
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
 
+<body>
   <!-- HEADER -->
   <header class="header">
-    <div class="logo">🎬 FastStream</div>
+    <h1 class="logo">🎬 FastStream</h1>
 
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Search movies..."
-    />
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search movies..." />
+    </div>
   </header>
+
+  <!-- GENRE MENU -->
+  <nav class="genres" id="genreList">
+    <!-- Genres will load here -->
+  </nav>
 
   <!-- MAIN -->
   <main>
-    <h2 class="section-title">Popular Movies</h2>
-    <div class="movie-grid" id="movieGrid">
-      <p class="loading">Loading movies...</p>
-    </div>
+    <!-- Trending -->
+    <section>
+      <h2>🔥 Trending</h2>
+      <div class="movie-grid" id="trendingMovies"></div>
+    </section>
+
+    <!-- Top Rated -->
+    <section>
+      <h2>⭐ Top Rated</h2>
+      <div class="movie-grid" id="topRatedMovies"></div>
+    </section>
+
+    <!-- Search Results -->
+    <section>
+      <h2 id="searchTitle" style="display:none;">Search Results</h2>
+      <div class="movie-grid" id="searchMovies"></div>
+    </section>
   </main>
 
   <!-- FOOTER -->
   <footer class="footer">
     <p>© 2026 FastStream</p>
+    <a href="about.html">About</a> |
+    <a href="disclaimer.html">Disclaimer</a> |
+    <a href="dmca.html">DMCA</a>
   </footer>
 
   <!-- JS -->
-  <script>
-    const API_KEY = "cc9374659de08b939499a50af4715216";
-    const BASE_URL = "https://api.themoviedb.org/3";
-    const IMG_URL = "https://image.tmdb.org/t/p/w500";
-
-    const movieGrid = document.getElementById("movieGrid");
-    const searchInput = document.getElementById("searchInput");
-
-    // Fetch Popular Movies
-    function loadMovies() {
-      fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`)
-        .then(res => res.json())
-        .then(data => {
-          showMovies(data.results);
-        });
-    }
-
-    // Show Movies
-    function showMovies(movies) {
-      movieGrid.innerHTML = "";
-      movies.forEach(movie => {
-        if (!movie.poster_path) return;
-
-        movieGrid.innerHTML += `
-          <a href="movie.html?id=${movie.id}" class="movie-card">
-            <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
-            <h4>${movie.title}</h4>
-          </a>
-        `;
-      });
-    }
-
-    // Search Movies
-    searchInput.addEventListener("keyup", () => {
-      const query = searchInput.value.trim();
-      if (query === "") {
-        loadMovies();
-        return;
-      }
-
-      fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`)
-        .then(res => res.json())
-        .then(data => {
-          showMovies(data.results);
-        });
-    });
-
-    // Init
-    loadMovies();
-  </script>
-
+  <script src="js/main.js"></script>
 </body>
 </html>
