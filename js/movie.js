@@ -1,90 +1,87 @@
-const urlParams = new URLSearchParams(window.location.search);
-const movieId = urlParams.get("id");
+ const params = new URLSearchParams(window.location.search);
+const movieId = params.get("id");
 
 const titleEl = document.getElementById("movieTitle");
 const posterEl = document.getElementById("moviePoster");
-const overviewEl = document.getElementById("movieOverview");
+const descEl = document.getElementById("movieDesc");
 const watchBtn = document.getElementById("watchBtn");
 const downloadBtn = document.getElementById("downloadBtn");
-const favBtn = document.getElementById("favBtn");
 
-// Demo movie data
+let currentMovie = null;
+
+/* ===============================
+   MOVIE DATA (Demo Static)
+================================ */
 const movies = [
   {
     id: "1",
     title: "Demo Movie One",
-    overview: "This is a demo movie description.",
-    poster_path: "/8Y43POKjjKDGI9MH89NW0NAzzp8.jpg"
+    poster: "/demo1.jpg",
+    desc: "This is a demo movie description."
   },
   {
     id: "2",
     title: "Demo Movie Two",
-    overview: "Another demo movie description.",
-    poster_path: "/9O1Iy9od7kIuYt8KQ7x3aF3jG6b.jpg"
+    poster: "/demo2.jpg",
+    desc: "Another demo movie description."
   }
 ];
 
-const movie = movies.find(m => m.id === movieId);
+/* ===============================
+   LOAD MOVIE
+================================ */
+currentMovie = movies.find(m => m.id === movieId);
 
-if (!movie) {
-  titleEl.innerText = "Movie not found";
+if (!currentMovie) {
+  document.body.innerHTML = "<h2>Movie not found</h2>";
 } else {
-  titleEl.innerText = movie.title;
-  posterEl.src = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
-  overviewEl.innerText = movie.overview;
+  titleEl.innerText = currentMovie.title;
+  posterEl.src = currentMovie.poster;
+  descEl.innerText = currentMovie.desc;
+
+  saveWatchHistory(currentMovie);
 }
 
-// ===== WATCH HISTORY SAVE =====
-let watchHistory = JSON.parse(localStorage.getItem("watchHistory")) || [];
+/* ===============================
+   CLICK TRACK FUNCTION
+================================ */
+function trackClick(movie, type) {
+  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
 
-if (movie && !watchHistory.some(m => m.id === movie.id)) {
-  watchHistory.push({
-    id: movie.id,
-    title: movie.title,
-    poster: movie.poster_path
-  });
+  if (!data[movie.id]) {
+    data[movie.id] = {
+      title: movie.title,
+      watch: 0,
+      download: 0
+    };
+  }
 
-  localStorage.setItem("watchHistory", JSON.stringify(watchHistory));
+  data[movie.id][type]++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(data));
 }
 
-// Redirect logic
+/* ===============================
+   BUTTON EVENTS
+================================ */
 watchBtn.onclick = () => {
-  window.location.href = `redirect.html?type=watch&id=${movieId}`;
+  trackClick(currentMovie, "watch");
+  window.location.href = "redirect.html?type=watch&id=" + currentMovie.id;
 };
 
 downloadBtn.onclick = () => {
-  window.location.href = `redirect.html?type=download&id=${movieId}`;
+  trackClick(currentMovie, "download");
+  window.location.href = "redirect.html?type=download&id=" + currentMovie.id;
 };
 
-// ===== FAVORITES SYSTEM =====
-let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+/* ===============================
+   WATCH HISTORY
+================================ */
+function saveWatchHistory(movie) {
+  let history = JSON.parse(localStorage.getItem("watchHistory")) || [];
 
-function isFavorite(id) {
-  return favorites.some(m => m.id === id);
-}
-
-function updateFavButton() {
-  if (!movie) return;
-  favBtn.innerText = isFavorite(movie.id)
-    ? "💔 Remove from Favorites"
-    : "❤️ Add to Favorites";
-}
-
-favBtn.onclick = () => {
-  if (!movie) return;
-
-  if (isFavorite(movie.id)) {
-    favorites = favorites.filter(m => m.id !== movie.id);
-  } else {
-    favorites.push({
-      id: movie.id,
-      title: movie.title,
-      poster: movie.poster_path
-    });
+  if (!history.find(m => m.id === movie.id)) {
+    history.unshift(movie);
   }
 
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-  updateFavButton();
-};
-
-updateFavButton();
+  localStorage.setItem("watchHistory", JSON.stringify(history));
+}
