@@ -2,31 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Movie</title>
+  <title>Movie Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header class="top-bar">
-  <a href="index.html" class="back-btn">← Back</a>
-  <h1 id="movieTitle">Loading...</h1>
-</header>
-
-<main class="movie-page">
-  <img id="moviePoster" class="movie-poster">
-  <p id="movieDesc"></p>
-
-  <div class="movie-actions">
-    <button id="watchBtn" class="primary-btn">▶ Watch</button>
-    <button id="downloadBtn" class="secondary-btn">⬇ Download</button>
+  <!-- HEADER -->
+  <div class="top-bar">
+    <h2 class="logo">🎬 Movie Hub</h2>
+    <a href="index.html">⬅ Back</a>
   </div>
 
-  <p id="continueMsg" style="display:none;color:#0f0">
-    ▶ Resumed from last visit
-  </p>
-</main>
+  <!-- MOVIE DETAILS -->
+  <section class="section" id="movieDetails"></section>
 
-<script src="js/movie.js"></script>
+  <!-- RECENTLY VIEWED -->
+  <section class="section">
+    <h2>Recently Viewed</h2>
+    <div id="recentMovies" class="movie-grid"></div>
+  </section>
+
+<script>
+/* -------------------- DATA -------------------- */
+const movies = [
+  { id: 1, title: "Inception", poster: "https://via.placeholder.com/300x450?text=Inception", desc: "A mind-bending thriller." },
+  { id: 2, title: "Interstellar", poster: "https://via.placeholder.com/300x450?text=Interstellar", desc: "Space and time adventure." },
+  { id: 3, title: "Joker", poster: "https://via.placeholder.com/300x450?text=Joker", desc: "Dark psychological drama." },
+  { id: 4, title: "Avengers", poster: "https://via.placeholder.com/300x450?text=Avengers", desc: "Superhero action blockbuster." }
+];
+
+/* -------------------- HELPERS -------------------- */
+const params = new URLSearchParams(window.location.search);
+const movieId = parseInt(params.get("id"));
+const movie = movies.find(m => m.id === movieId);
+
+/* -------------------- ANALYTICS -------------------- */
+function trackClick(movie, type) {
+  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
+  if (!data[movie.id]) {
+    data[movie.id] = { title: movie.title, watch: 0, download: 0 };
+  }
+  data[movie.id][type]++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(data));
+}
+
+/* -------------------- CONTINUE WATCHING -------------------- */
+function saveContinueWatching(movie) {
+  let list = JSON.parse(localStorage.getItem("continueWatching")) || [];
+  list = list.filter(m => m.id !== movie.id);
+  list.unshift(movie);
+  list = list.slice(0, 5);
+  localStorage.setItem("continueWatching", JSON.stringify(list));
+}
+
+/* -------------------- RECENTLY VIEWED -------------------- */
+function saveRecentlyViewed(movie) {
+  let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+  recent = recent.filter(m => m.id !== movie.id);
+  recent.unshift(movie);
+  recent = recent.slice(0, 6);
+  localStorage.setItem("recentMovies", JSON.stringify(recent));
+}
+
+function renderRecentlyViewed() {
+  const recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+  const box = document.getElementById("recentMovies");
+  box.innerHTML = "";
+  recent.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "movie-card";
+    div.innerHTML = `
+      <img src="${m.poster}">
+      <h3>${m.title}</h3>
+    `;
+    div.onclick = () => {
+      window.location.href = "movie.html?id=" + m.id;
+    };
+    box.appendChild(div);
+  });
+}
+
+/* -------------------- RENDER MOVIE -------------------- */
+if (!movie) {
+  document.getElementById("movieDetails").innerHTML = "<p>Movie not found</p>";
+} else {
+  saveContinueWatching(movie);
+  saveRecentlyViewed(movie);
+
+  document.getElementById("movieDetails").innerHTML = `
+    <div class="movie-card">
+      <img src="${movie.poster}">
+      <h2>${movie.title}</h2>
+      <p>${movie.desc}</p>
+
+      <button onclick="watchMovie()">▶ Watch</button>
+      <button onclick="downloadMovie()">⬇ Download</button>
+    </div>
+  `;
+}
+
+function watchMovie() {
+  trackClick(movie, "watch");
+  alert("Watching movie...");
+}
+
+function downloadMovie() {
+  trackClick(movie, "download");
+  alert("Downloading movie...");
+}
+
+renderRecentlyViewed();
+</script>
+
 </body>
 </html>
