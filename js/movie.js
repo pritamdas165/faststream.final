@@ -1,87 +1,39 @@
- const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 const movieId = params.get("id");
+const isContinue = params.get("continue");
 
-const titleEl = document.getElementById("movieTitle");
-const posterEl = document.getElementById("moviePoster");
-const descEl = document.getElementById("movieDesc");
-const watchBtn = document.getElementById("watchBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-
-let currentMovie = null;
-
-/* ===============================
-   MOVIE DATA (Demo Static)
-================================ */
+/* Dummy data (same ids as main.js) */
 const movies = [
-  {
-    id: "1",
-    title: "Demo Movie One",
-    poster: "/demo1.jpg",
-    desc: "This is a demo movie description."
-  },
-  {
-    id: "2",
-    title: "Demo Movie Two",
-    poster: "/demo2.jpg",
-    desc: "Another demo movie description."
-  }
+  { id: "1", title: "Movie One", poster: "assets/poster1.jpg", desc: "Description one" },
+  { id: "2", title: "Movie Two", poster: "assets/poster2.jpg", desc: "Description two" }
 ];
 
-/* ===============================
-   LOAD MOVIE
-================================ */
-currentMovie = movies.find(m => m.id === movieId);
+const movie = movies.find(m => m.id === movieId);
 
-if (!currentMovie) {
-  document.body.innerHTML = "<h2>Movie not found</h2>";
-} else {
-  titleEl.innerText = currentMovie.title;
-  posterEl.src = currentMovie.poster;
-  descEl.innerText = currentMovie.desc;
+document.getElementById("movieTitle").innerText = movie.title;
+document.getElementById("moviePoster").src = movie.poster;
+document.getElementById("movieDesc").innerText = movie.desc;
 
-  saveWatchHistory(currentMovie);
+/* Show continue message */
+if (isContinue) {
+  document.getElementById("continueMsg").style.display = "block";
 }
 
-/* ===============================
-   CLICK TRACK FUNCTION
-================================ */
-function trackClick(movie, type) {
-  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
-
-  if (!data[movie.id]) {
-    data[movie.id] = {
-      title: movie.title,
-      watch: 0,
-      download: 0
-    };
-  }
-
-  data[movie.id][type]++;
-  localStorage.setItem("clickAnalytics", JSON.stringify(data));
+/* SAVE LAST WATCHED */
+function saveLastWatched() {
+  localStorage.setItem("lastWatched", JSON.stringify({
+    id: movie.id,
+    title: movie.title,
+    poster: movie.poster
+  }));
 }
 
-/* ===============================
-   BUTTON EVENTS
-================================ */
-watchBtn.onclick = () => {
-  trackClick(currentMovie, "watch");
-  window.location.href = "redirect.html?type=watch&id=" + currentMovie.id;
+document.getElementById("watchBtn").onclick = () => {
+  saveLastWatched();
+  window.location.href = "redirect.html?type=watch&id=" + movie.id;
 };
 
-downloadBtn.onclick = () => {
-  trackClick(currentMovie, "download");
-  window.location.href = "redirect.html?type=download&id=" + currentMovie.id;
+document.getElementById("downloadBtn").onclick = () => {
+  saveLastWatched();
+  window.location.href = "redirect.html?type=download&id=" + movie.id;
 };
-
-/* ===============================
-   WATCH HISTORY
-================================ */
-function saveWatchHistory(movie) {
-  let history = JSON.parse(localStorage.getItem("watchHistory")) || [];
-
-  if (!history.find(m => m.id === movie.id)) {
-    history.unshift(movie);
-  }
-
-  localStorage.setItem("watchHistory", JSON.stringify(history));
-}
