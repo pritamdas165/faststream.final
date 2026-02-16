@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="top-bar">
+  <a href="index.html" class="back-btn">← Back</a>
+  <h1>Advanced Search</h1>
+</header>
+
+<section class="search-box">
+  <input type="text" id="searchInput" placeholder="Search movie...">
+  <select id="typeFilter">
+    <option value="all">All</option>
+    <option value="movie">Movie</option>
+    <option value="series">Series</option>
+  </select>
+</section>
+
+<main class="movie-grid" id="searchResults">
+  <p class="empty-text">Search something...</p>
+</main>
+
+<script src="js/search.js"></script>
+</body>
+</html>
