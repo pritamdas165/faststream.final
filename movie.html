@@ -2,48 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Movie Details</title>
+  <title>Movie Details | FastStream</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- SEO -->
-  <meta name="description" content="Movie details, cast, trailer and similar movies">
+  <meta name="description" content="Movie details, cast, trailer and similar movies" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- HEADER -->
   <header class="header">
-    <a href="index.html" class="logo">🎬 FastStream</a>
+    <a href="index.html" class="back-btn">⬅ Back</a>
+    <h1 class="logo">🎬 FastStream</h1>
   </header>
 
-  <!-- Movie Details -->
-  <main class="movie-details" id="movieDetails">
-    <p class="loading">Loading movie details...</p>
+  <!-- MOVIE DETAILS -->
+  <main id="movieDetails">
+    <!-- Movie info will load here -->
   </main>
 
-  <!-- Cast -->
-  <section class="cast-section">
-    <h2>Cast</h2>
-    <div class="cast-list" id="castList"></div>
+  <!-- CAST -->
+  <section>
+    <h2>Cast & Crew</h2>
+    <div class="cast-grid" id="castList"></div>
   </section>
 
-  <!-- Similar Movies -->
-  <section class="similar-section">
+  <!-- TRAILER -->
+  <section>
+    <h2>Trailer</h2>
+    <div id="trailerBox"></div>
+  </section>
+
+  <!-- SIMILAR MOVIES -->
+  <section>
     <h2>Similar Movies</h2>
     <div class="movie-grid" id="similarMovies"></div>
   </section>
 
-  <!-- Trailer Modal -->
-  <div class="trailer-modal" id="trailerModal">
-    <div class="trailer-content">
-      <span id="closeTrailer">✖</span>
-      <iframe id="trailerFrame" allowfullscreen></iframe>
-    </div>
-  </div>
-
-  <!-- JS -->
   <script src="js/movie.js"></script>
 </body>
 </html>
