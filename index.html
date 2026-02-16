@@ -2,51 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Movie Website</title>
+  <title>Movie App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
 
-  <!-- Header -->
-  <header class="header">
-    <h1>🎬 Movie Hub</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="favorites.html">Favorites</a>
-    </nav>
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="top-bar">
+    <h1 class="logo">🎬 MovieApp</h1>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search movies..." />
+      <button id="searchBtn"><i class="fa fa-search"></i></button>
+    </div>
+
+    <button id="themeToggle" title="Toggle Theme">
+      <i class="fa fa-moon"></i>
+    </button>
   </header>
 
-  <!-- Search -->
-  <section class="search-section">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Search movies..."
-    />
+  <!-- SEARCH HISTORY -->
+  <section class="section">
+    <h2>🔎 Search History</h2>
+    <div id="searchHistory" class="chip-container"></div>
   </section>
 
-  <!-- Continue Watching -->
+  <!-- TRENDING -->
   <section class="section">
-    <h2>Continue Watching</h2>
-    <div id="continueWatching" class="movie-grid"></div>
+    <h2>🔥 Trending Movies</h2>
+    <div id="trendingMovies" class="movie-grid"></div>
   </section>
 
-  <!-- Movie List -->
+  <!-- RECENTLY VIEWED -->
   <section class="section">
-    <h2>All Movies</h2>
+    <h2>🕒 Recently Viewed</h2>
+    <div id="recentMovies" class="movie-grid"></div>
+  </section>
+
+  <!-- ALL MOVIES -->
+  <section class="section">
+    <h2>🎥 All Movies</h2>
     <div id="movieList" class="movie-grid"></div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>© 2026 Movie Hub. All rights reserved.</p>
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 MovieApp | All Rights Reserved</p>
   </footer>
 
   <!-- JS -->
   <script src="js/main.js"></script>
-
 </body>
 </html>
