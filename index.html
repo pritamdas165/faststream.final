@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>MovieHub – Discover Movies</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Discover trending, top rated movies. Watch trailers, explore cast, and find movie details." />
+  <meta name="keywords" content="movies, tmdb, movie discovery, trailers" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+
+</head>
+<body class="dark">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="logo">🎬 MovieHub</div>
+
+    <nav class="nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="favorites.html">Favorites</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+
+    <div class="header-actions">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search movies..."
+      />
+      <button id="themeToggle">🌙</button>
+    </div>
+  </header>
+
+  <!-- ===== GENRE MENU ===== -->
+  <section class="genres" id="genreMenu">
+    <!-- Genres load here -->
+  </section>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container">
+
+    <!-- Trending -->
+    <section>
+      <h2>🔥 Trending</h2>
+      <div class="movie-grid" id="trendingMovies"></div>
+    </section>
+
+    <!-- Top Rated -->
+    <section>
+      <h2>⭐ Top Rated</h2>
+      <div class="movie-grid" id="topRatedMovies"></div>
+    </section>
+
+    <!-- All Movies -->
+    <section>
+      <h2>🎥 All Movies</h2>
+      <div class="movie-grid" id="movieList"></div>
+    </section>
+
+    <!-- Loader -->
+    <div id="loader" class="loader">Loading...</div>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p>
+      © 2026 MovieHub |
+      <a href="about.html">About</a> |
+      <a href="disclaimer.html">Disclaimer</a> |
+      <a href="dmca.html">DMCA</a>
+    </p>
+
+    <p class="small">
+      We do not host or stream movies. External links are not controlled by us.
+    </p>
+  </footer>
+
+  <!-- ===== JS ===== -->
+  <script src="js/analytics.js"></script>
+  <script src="js/ads-redirect.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
