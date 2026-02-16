@@ -8,21 +8,20 @@
 </head>
 <body>
 
-<header>
-  <h1>🎬 Movie Details</h1>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="favorites.html">Favorites</a>
-  </nav>
+<header class="top-bar">
+  <a href="index.html" class="back-btn">← Back</a>
+  <h1 id="movieTitle">Loading...</h1>
 </header>
 
-<main style="padding:20px">
-  <h2 id="title"></h2>
-  <img id="poster" src="" alt="" style="max-width:300px">
-  <p id="overview"></p>
+<main class="movie-details">
+  <img id="moviePoster" src="" alt="Poster">
+  <p id="movieOverview"></p>
 
-  <button onclick="watchMovie()">▶ Watch</button>
-  <button onclick="downloadMovie()">⬇ Download</button>
+  <div class="movie-actions">
+    <button id="watchBtn">▶ Watch</button>
+    <button id="downloadBtn">⬇ Download</button>
+    <button id="favBtn" class="fav-btn">❤️ Add to Favorites</button>
+  </div>
 </main>
 
 <script src="js/movie.js"></script>
