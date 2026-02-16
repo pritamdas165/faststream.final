@@ -1,28 +1,25 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Movie Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { margin:0; background:#0f0f0f; color:#fff; font-family:Arial }
-    .container { padding:20px; max-width:900px; margin:auto }
-    img { width:200px; border-radius:8px }
-    button {
-      padding:10px 14px; margin-top:10px;
-      border:none; background:#e50914; color:#fff;
-      border-radius:6px; cursor:pointer
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1 id="title"></h1>
-    <img id="poster" />
-    <p id="overview"></p>
-    <button id="favBtn">❤️ Add to Favorites</button>
-  </div>
 
-  <script src="js/movie.js"></script>
+<header>
+  <a href="index.html">⬅ Back</a>
+  <a href="favorites.html">❤️ Favorites</a>
+</header>
+
+<main style="padding:20px">
+  <h1 id="title"></h1>
+  <img id="poster" style="width:200px;border-radius:8px">
+  <p id="overview"></p>
+  <button id="favBtn">❤️ Add to Favorites</button>
+</main>
+
+<script src="js/movie.js"></script>
 </body>
 </html>
