@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Movie Details</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header>
-  <a href="index.html">⬅ Back</a>
-  <a href="favorites.html">❤️ Favorites</a>
+  <h1>🎬 Movie Details</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="favorites.html">Favorites</a>
+  </nav>
 </header>
 
 <main style="padding:20px">
-  <h1 id="title"></h1>
-  <img id="poster" style="width:200px;border-radius:8px">
+  <h2 id="title"></h2>
+  <img id="poster" src="" alt="" style="max-width:300px">
   <p id="overview"></p>
-  <button id="favBtn">❤️ Add to Favorites</button>
+
+  <button onclick="watchMovie()">▶ Watch</button>
+  <button onclick="downloadMovie()">⬇ Download</button>
 </main>
 
 <script src="js/movie.js"></script>
