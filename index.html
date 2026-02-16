@@ -2,90 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>FastStream – Movies</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>MovieHub – Discover Movies</title>
-
   <!-- SEO -->
-  <meta name="description" content="Discover trending, top rated movies. Watch trailers, explore cast, and find movie details." />
-  <meta name="keywords" content="movies, tmdb, movie discovery, trailers" />
+  <meta name="description" content="Watch trending, popular and latest movies online">
+  <meta name="keywords" content="movies, trending movies, latest movies">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/theme.css" />
- 
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="dark">
+<body>
 
-  <!-- ===== HEADER ===== -->
+  <!-- HEADER -->
   <header class="header">
-    <div class="logo">🎬 MovieHub</div>
+    <div class="logo">🎬 FastStream</div>
 
-    <nav class="nav">
-      <a href="index.html" class="active">Home</a>
-      <a href="favorites.html">Favorites</a>
-      <a href="profile.html">Profile</a>
-    </nav>
-
-    <div class="header-actions">
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Search movies..."
-      />
-      <button id="themeToggle">🌙</button>
-    </div>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search movies..."
+    />
   </header>
 
-  <!-- ===== GENRE MENU ===== -->
-  <section class="genres" id="genreMenu">
-    <!-- Genres load here -->
-  </section>
-
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="container">
-
-    <!-- Trending -->
-    <section>
-      <h2>🔥 Trending</h2>
-      <div class="movie-grid" id="trendingMovies"></div>
-    </section>
-
-    <!-- Top Rated -->
-    <section>
-      <h2>⭐ Top Rated</h2>
-      <div class="movie-grid" id="topRatedMovies"></div>
-    </section>
-
-    <!-- All Movies -->
-    <section>
-      <h2>🎥 All Movies</h2>
-      <div class="movie-grid" id="movieList"></div>
-    </section>
-
-    <!-- Loader -->
-    <div id="loader" class="loader">Loading...</div>
-
+  <!-- MAIN -->
+  <main>
+    <h2 class="section-title">Popular Movies</h2>
+    <div class="movie-grid" id="movieGrid">
+      <p class="loading">Loading movies...</p>
+    </div>
   </main>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- FOOTER -->
   <footer class="footer">
-    <p>
-      © 2026 MovieHub |
-      <a href="about.html">About</a> |
-      <a href="disclaimer.html">Disclaimer</a> |
-      <a href="dmca.html">DMCA</a>
-    </p>
-
-    <p class="small">
-      We do not host or stream movies. External links are not controlled by us.
-    </p>
+    <p>© 2026 FastStream</p>
   </footer>
 
-  <!-- ===== JS ===== -->
-  <script src="js/analytics.js"></script>
-  <script src="js/ads-redirect.js"></script>
-  <script src="js/main.js"></script>
+  <!-- JS -->
+  <script>
+    const API_KEY = "cc9374659de08b939499a50af4715216";
+    const BASE_URL = "https://api.themoviedb.org/3";
+    const IMG_URL = "https://image.tmdb.org/t/p/w500";
+
+    const movieGrid = document.getElementById("movieGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    // Fetch Popular Movies
+    function loadMovies() {
+      fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          showMovies(data.results);
+        });
+    }
+
+    // Show Movies
+    function showMovies(movies) {
+      movieGrid.innerHTML = "";
+      movies.forEach(movie => {
+        if (!movie.poster_path) return;
+
+        movieGrid.innerHTML += `
+          <a href="movie.html?id=${movie.id}" class="movie-card">
+            <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
+            <h4>${movie.title}</h4>
+          </a>
+        `;
+      });
+    }
+
+    // Search Movies
+    searchInput.addEventListener("keyup", () => {
+      const query = searchInput.value.trim();
+      if (query === "") {
+        loadMovies();
+        return;
+      }
+
+      fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`)
+        .then(res => res.json())
+        .then(data => {
+          showMovies(data.results);
+        });
+    });
+
+    // Init
+    loadMovies();
+  </script>
 
 </body>
 </html>
