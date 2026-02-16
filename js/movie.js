@@ -1,34 +1,36 @@
-const API_KEY = "cc9374659de08b939499a50af4715216";
-const IMG = "https://image.tmdb.org/t/p/w500";
+const API_KEY = "YOUR_TMDB_API_KEY";
+const BASE_URL = "https://api.themoviedb.org/3";
+const IMG_URL = "https://image.tmdb.org/t/p/w500";
 
 const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+const movieId = params.get("id");
 
-let movieData = null;
+const titleEl = document.getElementById("title");
+const posterEl = document.getElementById("poster");
+const overviewEl = document.getElementById("overview");
 
-fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`)
-  .then(res => res.json())
-  .then(data => {
-    movieData = data;
-    document.getElementById("title").textContent = data.title;
-    document.getElementById("overview").textContent = data.overview;
-    document.getElementById("poster").src = IMG + data.poster_path;
-  });
-
-document.getElementById("favBtn").onclick = () => {
-  let fav = JSON.parse(localStorage.getItem("favorites")) || [];
-
-  if (fav.find(m => m.id === movieData.id)) {
-    alert("Already added");
+async function loadMovie() {
+  if (!movieId) {
+    titleEl.textContent = "Movie not found";
     return;
   }
 
-  fav.push({
-    id: movieData.id,
-    title: movieData.title,
-    poster: movieData.poster_path
-  });
+  const res = await fetch(
+    `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
+  );
+  const movie = await res.json();
 
-  localStorage.setItem("favorites", JSON.stringify(fav));
-  alert("Added to favorites ❤️");
-};
+  titleEl.textContent = movie.title;
+  overviewEl.textContent = movie.overview;
+  posterEl.src = IMG_URL + movie.poster_path;
+}
+
+function watchMovie() {
+  window.location.href = "redirect.html?to=watch";
+}
+
+function downloadMovie() {
+  window.location.href = "redirect.html?to=download";
+}
+
+loadMovie();
