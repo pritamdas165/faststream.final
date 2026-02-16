@@ -1,43 +1,22 @@
-const body = document.getElementById("analyticsBody");
-const resetBtn = document.getElementById("resetAnalytics");
+const analyticsList = document.getElementById("analyticsList");
 
-const analytics = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
+const data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
 
-function renderAnalytics() {
-  body.innerHTML = "";
+analyticsList.innerHTML = "";
 
-  const keys = Object.keys(analytics);
+if (Object.keys(data).length === 0) {
+  analyticsList.innerHTML = "<p style='color:#fff'>No analytics data yet</p>";
+} else {
+  Object.values(data).forEach(movie => {
+    const box = document.createElement("div");
+    box.className = "analytics-card";
 
-  if (keys.length === 0) {
-    body.innerHTML = `
-      <tr>
-        <td colspan="3" style="text-align:center;">
-          No analytics data yet
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  keys.forEach(id => {
-    const movie = analytics[id];
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${movie.title}</td>
-      <td>${movie.watch || 0}</td>
-      <td>${movie.download || 0}</td>
+    box.innerHTML = `
+      <h3>${movie.title}</h3>
+      <p>▶ Watch clicks: <b>${movie.watch}</b></p>
+      <p>⬇ Download clicks: <b>${movie.download}</b></p>
     `;
 
-    body.appendChild(row);
+    analyticsList.appendChild(box);
   });
 }
-
-resetBtn.onclick = () => {
-  if (confirm("Reset all analytics data?")) {
-    localStorage.removeItem("clickAnalytics");
-    location.reload();
-  }
-};
-
-renderAnalytics();
