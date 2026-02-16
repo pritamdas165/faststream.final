@@ -1,58 +1,32 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Movie Details</title>
+  <title>Movie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- ================= HEADER ================= -->
 <header class="top-bar">
   <a href="index.html" class="back-btn">← Back</a>
   <h1 id="movieTitle">Loading...</h1>
 </header>
 
-<!-- ================= MOVIE CONTENT ================= -->
 <main class="movie-page">
+  <img id="moviePoster" class="movie-poster">
+  <p id="movieDesc"></p>
 
-  <!-- Poster -->
-  <div class="movie-poster-box">
-    <img id="moviePoster" src="" alt="Movie Poster">
-  </div>
-
-  <!-- Description -->
-  <div class="movie-info">
-    <p id="movieDesc">Loading movie description...</p>
-  </div>
-
-  <!-- Action Buttons -->
   <div class="movie-actions">
-    <button id="watchBtn" class="primary-btn">
-      ▶ Watch
-    </button>
-
-    <button id="downloadBtn" class="secondary-btn">
-      ⬇ Download
-    </button>
-
-    <button id="favBtn" class="outline-btn">
-      ❤️ Add to Favorites
-    </button>
+    <button id="watchBtn" class="primary-btn">▶ Watch</button>
+    <button id="downloadBtn" class="secondary-btn">⬇ Download</button>
   </div>
 
+  <p id="continueMsg" style="display:none;color:#0f0">
+    ▶ Resumed from last visit
+  </p>
 </main>
 
-<!-- ================= FOOTER ================= -->
-<footer class="footer">
-  <p>© 2026 Movie Site</p>
-</footer>
-
-<!-- ================= SCRIPTS ================= -->
 <script src="js/movie.js"></script>
-
 </body>
 </html>
