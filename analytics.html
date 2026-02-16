@@ -10,27 +10,18 @@
 
 <header class="top-bar">
   <a href="index.html" class="back-btn">← Back</a>
-  <h1>Click Analytics</h1>
+  <h1>📊 Click Analytics</h1>
 </header>
 
 <main class="analytics-page">
-  <h2>📊 Button Click Stats</h2>
-
-  <table class="analytics-table">
-    <thead>
-      <tr>
-        <th>Movie</th>
-        <th>Watch Clicks</th>
-        <th>Download Clicks</th>
-      </tr>
-    </thead>
-    <tbody id="analyticsBody"></tbody>
-  </table>
-
-  <button class="danger-btn" id="resetAnalytics">
-    Reset Analytics
-  </button>
+  <div id="analyticsList" class="analytics-list">
+    <p style="color:#fff">Loading analytics...</p>
+  </div>
 </main>
+
+<footer class="footer">
+  <p>Analytics data stored locally</p>
+</footer>
 
 <script src="js/analytics.js"></script>
 </body>
