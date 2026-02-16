@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Please Wait...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body{
       margin:0;
       background:#0f0f0f;
       color:#fff;
-      font-family:Arial;
+      font-family:Arial, Helvetica, sans-serif;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -23,14 +23,20 @@
       max-width:320px;
       width:100%;
     }
+    .ads{
+      background:#000;
+      padding:12px;
+      margin:15px 0;
+      font-size:13px;
+      color:#aaa;
+    }
     button{
-      padding:10px 15px;
+      padding:10px 16px;
       border:none;
       background:#e50914;
       color:#fff;
       border-radius:6px;
       cursor:pointer;
-      margin-top:15px;
       display:none;
     }
   </style>
@@ -39,11 +45,12 @@
 
 <div class="box">
   <h2>Please wait...</h2>
-  <p>Redirecting in <span id="time">5</span> seconds</p>
+  <p>Continue in <span id="time">5</span> seconds</p>
 
-  <!-- এখানে চাইলে external ads script বসাতে পারো -->
-  <div style="margin:15px 0;background:#000;padding:10px">
-    ADS PLACEHOLDER
+  <div class="ads">
+    ADS PLACEHOLDER  
+    <br>
+    (external ads can be loaded here)
   </div>
 
   <button id="continueBtn">Continue</button>
