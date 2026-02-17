@@ -1,7 +1,7 @@
 /* =========================
    CONFIG
 ========================= */
-const API_KEY = "YOUR_TMDB_API_KEY"; // <-- নিজের TMDB key বসাও
+const API_KEY = "cc9374659de08b939499a50af4715216"; // <-- নিজের TMDB key বসাও
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMG_URL = "https://image.tmdb.org/t/p/w500";
 const PLACEHOLDER = "https://via.placeholder.com/300x450?text=No+Image";
