@@ -1,137 +1,150 @@
-/* =========================
-   GLOBAL DATA (Demo Movies)
-========================= */
+/*********************************
+ FASTSTREAM – MAIN JS
+ All features wired together
+**********************************/
+
+/* =====================
+   Sample Movie Data
+===================== */
 const movies = [
-  { id: 1, title: "Inception", poster: "https://i.imgur.com/Yo0pE5M.jpg", trending: true },
-  { id: 2, title: "Interstellar", poster: "https://i.imgur.com/Exw6kZx.jpg", trending: true },
-  { id: 3, title: "Joker", poster: "https://i.imgur.com/0rVeh4F.jpg", trending: false },
-  { id: 4, title: "Avengers", poster: "https://i.imgur.com/2fDh8YF.jpg", trending: true },
-  { id: 5, title: "Batman", poster: "https://i.imgur.com/fY2Xy5K.jpg", trending: false }
+  {
+    id: 1,
+    title: "Avengers: Endgame",
+    poster: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg"
+  },
+  {
+    id: 2,
+    title: "John Wick 4",
+    poster: "https://image.tmdb.org/t/p/w500/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg"
+  },
+  {
+    id: 3,
+    title: "Avatar: The Way of Water",
+    poster: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
+  },
+  {
+    id: 4,
+    title: "Spider‑Man: No Way Home",
+    poster: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
+  }
 ];
 
-/* =========================
-   ELEMENTS
-========================= */
-const allMoviesGrid = document.getElementById("allMovies");
-const trendingRow = document.getElementById("trendingMovies");
-const recentRow = document.getElementById("recentMovies");
+/* =====================
+   DOM Elements
+===================== */
+const trendingRow = document.getElementById("trendingRow");
+const recentlyViewedRow = document.getElementById("recentlyViewedRow");
 const searchInput = document.getElementById("searchInput");
+const searchHistoryList = document.getElementById("searchHistory");
 const themeToggle = document.getElementById("themeToggle");
 
-/* =========================
-   INIT
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadTheme();
-  renderAllMovies(movies);
-  renderTrending();
-  renderRecentlyViewed();
+/* =====================
+   Theme Toggle
+===================== */
+function loadTheme() {
+  const theme = localStorage.getItem("theme");
+  if (theme === "light") {
+    document.body.classList.add("light");
+  }
+}
+
+themeToggle?.addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("light") ? "light" : "dark"
+  );
 });
 
-/* =========================
-   RENDER FUNCTIONS
-========================= */
-function renderAllMovies(list) {
-  if (!allMoviesGrid) return;
-  allMoviesGrid.innerHTML = "";
-  list.forEach(movie => {
-    allMoviesGrid.appendChild(createMovieCard(movie));
-  });
-}
+loadTheme();
 
-function renderTrending() {
-  if (!trendingRow) return;
-  trendingRow.innerHTML = "";
-  movies.filter(m => m.trending).forEach(movie => {
-    trendingRow.appendChild(createMovieCard(movie, true));
-  });
-}
-
-function renderRecentlyViewed() {
-  if (!recentRow) return;
-  const recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
-  recentRow.innerHTML = "";
-  recent.forEach(movie => {
-    recentRow.appendChild(createMovieCard(movie, true));
-  });
-}
-
-/* =========================
-   MOVIE CARD
-========================= */
-function createMovieCard(movie, small = false) {
+/* =====================
+   Render Movies
+===================== */
+function createMovieCard(movie) {
   const card = document.createElement("div");
   card.className = "movie-card";
   card.innerHTML = `
     <img src="${movie.poster}" alt="${movie.title}">
     <h3>${movie.title}</h3>
-    <button>View</button>
   `;
-  card.onclick = () => openMovie(movie);
+
+  card.addEventListener("click", () => {
+    saveRecentlyViewed(movie);
+    window.location.href = `movie.html?id=${movie.id}`;
+  });
+
   return card;
 }
 
-/* =========================
-   OPEN MOVIE
-========================= */
-function openMovie(movie) {
-  saveRecentlyViewed(movie);
-  window.location.href = `movie.html?id=${movie.id}`;
-}
-
-/* =========================
-   RECENTLY VIEWED
-========================= */
-function saveRecentlyViewed(movie) {
-  let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
-  recent = recent.filter(m => m.id !== movie.id);
-  recent.unshift(movie);
-  if (recent.length > 10) recent.pop();
-  localStorage.setItem("recentMovies", JSON.stringify(recent));
-}
-
-/* =========================
-   SEARCH
-========================= */
-if (searchInput) {
-  searchInput.addEventListener("input", e => {
-    const value = e.target.value.toLowerCase();
-    const filtered = movies.filter(m =>
-      m.title.toLowerCase().includes(value)
-    );
-    renderAllMovies(filtered);
-    saveSearchHistory(value);
+function renderTrending() {
+  if (!trendingRow) return;
+  trendingRow.innerHTML = "";
+  movies.forEach(movie => {
+    trendingRow.appendChild(createMovieCard(movie));
   });
 }
 
-/* =========================
-   SEARCH HISTORY
-========================= */
-function saveSearchHistory(term) {
-  if (!term) return;
+/* =====================
+   Recently Viewed
+===================== */
+function saveRecentlyViewed(movie) {
+  let recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+  recent = recent.filter(m => m.id !== movie.id);
+  recent.unshift(movie);
+  recent = recent.slice(0, 10);
+  localStorage.setItem("recentlyViewed", JSON.stringify(recent));
+}
+
+function renderRecentlyViewed() {
+  if (!recentlyViewedRow) return;
+  const recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+  recentlyViewedRow.innerHTML = "";
+
+  recent.forEach(movie => {
+    recentlyViewedRow.appendChild(createMovieCard(movie));
+  });
+}
+
+/* =====================
+   Search + History
+===================== */
+function saveSearch(term) {
   let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  history = history.filter(h => h !== term);
+  history = history.filter(item => item !== term);
   history.unshift(term);
-  if (history.length > 10) history.pop();
+  history = history.slice(0, 8);
   localStorage.setItem("searchHistory", JSON.stringify(history));
 }
 
-/* =========================
-   THEME (DARK / LIGHT)
-========================= */
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    localStorage.setItem(
-      "theme",
-      document.body.classList.contains("dark") ? "dark" : "light"
-    );
+function renderSearchHistory() {
+  if (!searchHistoryList) return;
+  const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  searchHistoryList.innerHTML = "";
+
+  history.forEach(term => {
+    const li = document.createElement("li");
+    li.textContent = term;
+    searchHistoryList.appendChild(li);
   });
 }
 
-function loadTheme() {
-  const saved = localStorage.getItem("theme");
-  if (saved === "dark") {
-    document.body.classList.add("dark");
-  }
-}
+searchInput?.addEventListener("input", e => {
+  const term = e.target.value.toLowerCase();
+  if (term.length < 2) return;
+
+  saveSearch(term);
+  renderSearchHistory();
+
+  trendingRow.innerHTML = "";
+  movies
+    .filter(movie => movie.title.toLowerCase().includes(term))
+    .forEach(movie => trendingRow.appendChild(createMovieCard(movie)));
+});
+
+/* =====================
+   Init
+===================== */
+renderTrending();
+renderRecentlyViewed();
+renderSearchHistory();
