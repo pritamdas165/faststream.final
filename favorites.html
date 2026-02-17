@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>My Favorites</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <title>Favorites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<header class="top-bar">
-  <h1>❤️ My Favorite Movies</h1>
-  <a href="index.html" class="back-btn">← Back Home</a>
-</header>
+  <!-- Header -->
+  <header class="header">
+    <h1>❤️ My Favorites</h1>
+    <a href="index.html" class="back-btn">⬅ Back to Home</a>
+  </header>
 
-<main class="movie-grid" id="favoritesList">
-  <!-- favorite movies will load here -->
-</main>
+  <!-- Favorites Container -->
+  <main class="container">
+    <div id="favoritesList" class="movie-grid"></div>
 
-<script src="js/favorites.js"></script>
+    <p id="emptyMsg" class="empty-msg" style="display:none;">
+      No favorite movies added yet.
+    </p>
+  </main>
+
+  <!-- JS -->
+  <script src="js/favorites.js"></script>
 </body>
 </html>
