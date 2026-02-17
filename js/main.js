@@ -1,35 +1,36 @@
-import { TMDB_BASE, headers } from "./config.js";
+import { TMDB_BASE, headers, IMG } from "./config.js";
 
-const trendingEl = document.getElementById("trending-movies");
+const trending = document.getElementById("trending-movies");
+const searchInput = document.getElementById("searchInput");
 
 async function loadTrending() {
-  try {
-    const res = await fetch(`${TMDB_BASE}/trending/movie/week`, {
-      headers
-    });
-
-    const data = await res.json();
-    trendingEl.innerHTML = "";
-
-    data.results.forEach(movie => {
-      const card = document.createElement("div");
-      card.className = "movie-card";
-
-      card.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" />
-        <h3>${movie.title}</h3>
-      `;
-
-      card.onclick = () => {
-        window.location.href = `redirect.html?id=${movie.id}`;
-      };
-
-      trendingEl.appendChild(card);
-    });
-
-  } catch (err) {
-    console.error("TMDB error:", err);
-  }
+  const res = await fetch(`${TMDB_BASE}/trending/movie/week`, { headers });
+  const data = await res.json();
+  renderMovies(data.results);
 }
+
+function renderMovies(movies) {
+  trending.innerHTML = "";
+  movies.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <img src="${m.poster_path ? IMG + m.poster_path : 'assets/placeholder.png'}">
+      <h3>${m.title}</h3>
+    `;
+    div.onclick = () => location.href = `redirect.html?id=${m.id}`;
+    trending.appendChild(div);
+  });
+}
+
+searchInput.addEventListener("keyup", async e => {
+  if (!e.target.value) return loadTrending();
+  const res = await fetch(
+    `${TMDB_BASE}/search/movie?query=${e.target.value}`,
+    { headers }
+  );
+  const data = await res.json();
+  renderMovies(data.results);
+});
 
 loadTrending();
