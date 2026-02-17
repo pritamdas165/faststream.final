@@ -1,53 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Movie Details | FastStream</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Details</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <header class="top-bar">
-    <a href="index.html" class="back-btn">⬅ Back</a>
-    <h2 id="movieTitle">Loading...</h2>
-    <button id="favBtn">♡ Favorite</button>
-  </header>
+<a href="index.html">⬅ Back</a>
+<div id="movie"></div>
 
-  <main class="movie-page">
-    <div class="movie-left">
-      <img id="moviePoster" />
-    </div>
-
-    <div class="movie-right">
-      <p id="movieOverview"></p>
-
-      <p><strong>Genres:</strong> <span id="movieGenres"></span></p>
-      <p><strong>Rating:</strong> <span id="movieRating"></span></p>
-      <p><strong>Release:</strong> <span id="movieDate"></span></p>
-
-      <button id="watchBtn" class="watch-btn">▶ Watch Trailer</button>
-    </div>
-  </main>
-
-  <!-- TRAILER -->
-  <section class="section">
-    <h3>🎞 Trailer</h3>
-    <div id="trailerBox"></div>
-  </section>
-
-  <!-- CAST -->
-  <section class="section">
-    <h3>👥 Cast</h3>
-    <div id="castList" class="movie-row"></div>
-  </section>
-
-  <!-- SIMILAR -->
-  <section class="section">
-    <h3>🔁 Similar Movies</h3>
-    <div id="similarMovies" class="movie-grid"></div>
-  </section>
-
-  <script src="js/movie.js"></script>
+<script type="module" src="js/movie.js"></script>
 </body>
 </html>
