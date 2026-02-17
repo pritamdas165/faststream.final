@@ -1,81 +1,114 @@
 /*************************
-  GET MOVIE ID FROM URL
+  GET MOVIE ID
 **************************/
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get("id");
 
-/*************************
-  MOVIE LIST (SAME IDS)
-**************************/
-const movies = [
-  { id: "m1", title: "Avengers Endgame" },
-  { id: "m2", title: "Inception" },
-  { id: "m3", title: "Interstellar" },
-  { id: "m4", title: "Joker" }
-];
-
-const movie = movies.find(m => m.id === movieId);
-
-if (!movie) {
-  alert("Movie not found");
+if (!movieId) {
+  alert("Invalid movie");
   window.location.href = "index.html";
 }
 
 /*************************
-  SET TITLE
+  SAMPLE MOVIE DATA
+  (Later API replaceable)
 **************************/
-document.getElementById("movieTitle").innerText = movie.title;
+const movie = {
+  id: movieId,
+  title: movieId,
+  video: "https://www.w3schools.com/html/mov_bbb.mp4"
+};
+
+/*************************
+  SET MOVIE DATA
+**************************/
+const titleEl = document.getElementById("movieTitle");
+const videoEl = document.getElementById("videoPlayer");
+const sourceEl = document.getElementById("videoSource");
+const downloadBtn = document.getElementById("downloadBtn");
+const watchBtn = document.getElementById("watchBtn");
+const favBtn = document.getElementById("favBtn");
+
+titleEl.innerText = movie.title;
+sourceEl.src = movie.video;
+downloadBtn.href = movie.video;
+videoEl.load();
 
 /*************************
   CONTINUE WATCHING
 **************************/
-const video = document.getElementById("videoPlayer");
 const progressKey = "progress_" + movie.id;
 
-// Resume time
-const savedTime = localStorage.getItem(progressKey);
-if (savedTime) {
-  video.currentTime = savedTime;
-}
+videoEl.addEventListener("timeupdate", () => {
+  localStorage.setItem(progressKey, videoEl.currentTime);
+});
 
-// Save progress
-video.addEventListener("timeupdate", () => {
-  localStorage.setItem(progressKey, video.currentTime);
+videoEl.addEventListener("loadedmetadata", () => {
+  const savedTime = localStorage.getItem(progressKey);
+  if (savedTime) {
+    videoEl.currentTime = savedTime;
+  }
 });
 
 /*************************
-  ANALYTICS (WATCH / DOWNLOAD)
+  ANALYTICS
 **************************/
-function trackClick(type) {
-  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
+let analytics = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
 
-  if (!data[movie.id]) {
-    data[movie.id] = {
-      title: movie.title,
-      watch: 0,
-      download: 0
-    };
-  }
-
-  data[movie.id][type]++;
-  localStorage.setItem("clickAnalytics", JSON.stringify(data));
+if (!analytics[movie.id]) {
+  analytics[movie.id] = {
+    watch: 0,
+    download: 0,
+    open: 0
+  };
 }
 
-document.getElementById("watchBtn").addEventListener("click", () => {
-  trackClick("watch");
-  alert("Watch counted");
+analytics[movie.id].open++;
+localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
+
+watchBtn.addEventListener("click", () => {
+  analytics[movie.id].watch++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
+  alert("Watch counted ✅");
 });
 
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  trackClick("download");
-  alert("Download counted");
+downloadBtn.addEventListener("click", () => {
+  analytics[movie.id].download++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
 });
+
+/*************************
+  FAVORITES
+**************************/
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+function updateFavBtn() {
+  const exists = favorites.find(m => m.id === movie.id);
+  favBtn.innerText = exists ? "💔 Remove Favorite" : "❤️ Add Favorite";
+}
+
+favBtn.addEventListener("click", () => {
+  const exists = favorites.find(m => m.id === movie.id);
+
+  if (exists) {
+    favorites = favorites.filter(m => m.id !== movie.id);
+  } else {
+    favorites.push({ id: movie.id, title: movie.title });
+  }
+
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  updateFavBtn();
+});
+
+updateFavBtn();
 
 /*************************
   RECENTLY VIEWED
 **************************/
-let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+let recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+
 recent = recent.filter(m => m.id !== movie.id);
-recent.unshift(movie);
-recent = recent.slice(0, 6);
-localStorage.setItem("recentMovies", JSON.stringify(recent));
+recent.unshift({ id: movie.id, title: movie.title });
+recent = recent.slice(0, 10);
+
+localStorage.setItem("recentlyViewed", JSON.stringify(recent));
