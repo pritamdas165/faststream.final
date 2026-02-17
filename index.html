@@ -2,50 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FastStream – Movies</title>
+  <title>FastStream – Watch Movies</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
 
-  <!-- Top Bar -->
+  <!-- HEADER -->
   <header class="top-bar">
-    <h1 class="logo">🎬 FastStream</h1>
+    <h1 class="logo">FastStream</h1>
 
-    <div class="top-actions">
-      <input type="text" id="searchInput" placeholder="Search movies..." />
-      <button id="themeToggle">🌙</button>
-      <a href="favorites.html" class="fav-link">❤️ Favorites</a>
-    </div>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search movies..."
+    />
   </header>
 
-  <!-- Trending -->
-  <section class="section">
-    <h2>🔥 Trending</h2>
-    <div id="trendingMovies" class="movie-grid"></div>
+  <!-- TRENDING -->
+  <section>
+    <h2 class="section-title">🔥 Trending Movies</h2>
+    <div id="movieGrid" class="movie-grid"></div>
   </section>
 
-  <!-- Recently Viewed -->
-  <section class="section">
-    <h2>👀 Recently Viewed</h2>
-    <div id="recentMovies" class="movie-grid"></div>
-  </section>
-
-  <!-- Search Result -->
-  <section class="section">
-    <h2>🔎 Search Results</h2>
-    <div id="searchResults" class="movie-grid"></div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <p>© 2026 FastStream</p>
-  </footer>
-
-  <!-- JS -->
   <script src="js/main.js"></script>
 </body>
 </html>
