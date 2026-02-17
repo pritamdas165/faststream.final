@@ -1,150 +1,149 @@
-/*********************************
- FASTSTREAM – MAIN JS
- All features wired together
-**********************************/
-
-/* =====================
-   Sample Movie Data
-===================== */
+/***********************
+  GLOBAL MOVIE DATA
+************************/
 const movies = [
   {
-    id: 1,
-    title: "Avengers: Endgame",
-    poster: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg"
+    id: "m1",
+    title: "Avengers Endgame",
+    poster: "https://via.placeholder.com/200x300?text=Endgame",
   },
   {
-    id: 2,
-    title: "John Wick 4",
-    poster: "https://image.tmdb.org/t/p/w500/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg"
+    id: "m2",
+    title: "Inception",
+    poster: "https://via.placeholder.com/200x300?text=Inception",
   },
   {
-    id: 3,
-    title: "Avatar: The Way of Water",
-    poster: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
+    id: "m3",
+    title: "Interstellar",
+    poster: "https://via.placeholder.com/200x300?text=Interstellar",
   },
   {
-    id: 4,
-    title: "Spider‑Man: No Way Home",
-    poster: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
+    id: "m4",
+    title: "Joker",
+    poster: "https://via.placeholder.com/200x300?text=Joker",
   }
 ];
 
-/* =====================
-   DOM Elements
-===================== */
-const trendingRow = document.getElementById("trendingRow");
-const recentlyViewedRow = document.getElementById("recentlyViewedRow");
+/***********************
+  DOM ELEMENTS
+************************/
+const trendingEl = document.getElementById("trendingMovies");
+const recentEl = document.getElementById("recentMovies");
+const searchEl = document.getElementById("searchResults");
 const searchInput = document.getElementById("searchInput");
-const searchHistoryList = document.getElementById("searchHistory");
 const themeToggle = document.getElementById("themeToggle");
 
-/* =====================
-   Theme Toggle
-===================== */
-function loadTheme() {
-  const theme = localStorage.getItem("theme");
-  if (theme === "light") {
-    document.body.classList.add("light");
-  }
+/***********************
+  INIT
+************************/
+loadTheme();
+renderTrending();
+renderRecent();
+
+/***********************
+  RENDER FUNCTIONS
+************************/
+function renderTrending() {
+  trendingEl.innerHTML = "";
+  movies.forEach(movie => {
+    trendingEl.appendChild(createMovieCard(movie));
+  });
 }
 
-themeToggle?.addEventListener("click", () => {
-  document.body.classList.toggle("light");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("light") ? "light" : "dark"
-  );
-});
+function renderRecent() {
+  recentEl.innerHTML = "";
+  const recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+  recent.forEach(movie => {
+    recentEl.appendChild(createMovieCard(movie));
+  });
+}
 
-loadTheme();
+function renderSearch(results) {
+  searchEl.innerHTML = "";
+  results.forEach(movie => {
+    searchEl.appendChild(createMovieCard(movie));
+  });
+}
 
-/* =====================
-   Render Movies
-===================== */
+/***********************
+  MOVIE CARD
+************************/
 function createMovieCard(movie) {
   const card = document.createElement("div");
   card.className = "movie-card";
+
   card.innerHTML = `
     <img src="${movie.poster}" alt="${movie.title}">
     <h3>${movie.title}</h3>
+    <button class="watch-btn">▶ Watch</button>
+    <button class="fav-btn">❤️</button>
   `;
 
-  card.addEventListener("click", () => {
-    saveRecentlyViewed(movie);
+  // Watch click
+  card.querySelector(".watch-btn").onclick = () => {
+    saveRecent(movie);
     window.location.href = `movie.html?id=${movie.id}`;
-  });
+  };
+
+  // Favorite click
+  card.querySelector(".fav-btn").onclick = () => {
+    saveFavorite(movie);
+    alert("Added to favorites");
+  };
 
   return card;
 }
 
-function renderTrending() {
-  if (!trendingRow) return;
-  trendingRow.innerHTML = "";
-  movies.forEach(movie => {
-    trendingRow.appendChild(createMovieCard(movie));
-  });
-}
-
-/* =====================
-   Recently Viewed
-===================== */
-function saveRecentlyViewed(movie) {
-  let recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-  recent = recent.filter(m => m.id !== movie.id);
-  recent.unshift(movie);
-  recent = recent.slice(0, 10);
-  localStorage.setItem("recentlyViewed", JSON.stringify(recent));
-}
-
-function renderRecentlyViewed() {
-  if (!recentlyViewedRow) return;
-  const recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-  recentlyViewedRow.innerHTML = "";
-
-  recent.forEach(movie => {
-    recentlyViewedRow.appendChild(createMovieCard(movie));
-  });
-}
-
-/* =====================
-   Search + History
-===================== */
-function saveSearch(term) {
-  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  history = history.filter(item => item !== term);
-  history.unshift(term);
-  history = history.slice(0, 8);
-  localStorage.setItem("searchHistory", JSON.stringify(history));
-}
-
-function renderSearchHistory() {
-  if (!searchHistoryList) return;
-  const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  searchHistoryList.innerHTML = "";
-
-  history.forEach(term => {
-    const li = document.createElement("li");
-    li.textContent = term;
-    searchHistoryList.appendChild(li);
-  });
-}
-
-searchInput?.addEventListener("input", e => {
-  const term = e.target.value.toLowerCase();
-  if (term.length < 2) return;
-
-  saveSearch(term);
-  renderSearchHistory();
-
-  trendingRow.innerHTML = "";
-  movies
-    .filter(movie => movie.title.toLowerCase().includes(term))
-    .forEach(movie => trendingRow.appendChild(createMovieCard(movie)));
+/***********************
+  SEARCH
+************************/
+searchInput.addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  if (!q) {
+    searchEl.innerHTML = "";
+    return;
+  }
+  const filtered = movies.filter(m =>
+    m.title.toLowerCase().includes(q)
+  );
+  renderSearch(filtered);
 });
 
-/* =====================
-   Init
-===================== */
-renderTrending();
-renderRecentlyViewed();
-renderSearchHistory();
+/***********************
+  RECENTLY VIEWED
+************************/
+function saveRecent(movie) {
+  let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+  recent = recent.filter(m => m.id !== movie.id);
+  recent.unshift(movie);
+  recent = recent.slice(0, 6);
+  localStorage.setItem("recentMovies", JSON.stringify(recent));
+}
+
+/***********************
+  FAVORITES
+************************/
+function saveFavorite(movie) {
+  let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+  if (!favs.find(m => m.id === movie.id)) {
+    favs.push(movie);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+  }
+}
+
+/***********************
+  THEME (DARK / LIGHT)
+************************/
+function loadTheme() {
+  const theme = localStorage.getItem("theme") || "light";
+  document.body.className = theme;
+  themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+}
+
+themeToggle.addEventListener("click", () => {
+  const newTheme =
+    document.body.classList.contains("dark") ? "light" : "dark";
+  document.body.className = newTheme;
+  localStorage.setItem("theme", newTheme);
+  themeToggle.textContent = newTheme === "dark" ? "☀️" : "🌙";
+});
