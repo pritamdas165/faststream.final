@@ -1,50 +1,44 @@
-/*************************
-  GET FAVORITES
-**************************/
-const favoritesContainer = document.getElementById("favoritesContainer");
+const favoritesGrid = document.getElementById("favoritesGrid");
 const emptyMsg = document.getElementById("emptyMsg");
 
-let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
-/*************************
-  RENDER FAVORITES
-**************************/
-function renderFavorites() {
-  favoritesContainer.innerHTML = "";
-
-  if (favorites.length === 0) {
-    emptyMsg.style.display = "block";
-    return;
-  }
-
+if (favorites.length === 0) {
+  emptyMsg.style.display = "block";
+} else {
   emptyMsg.style.display = "none";
+  renderFavorites();
+}
+
+function renderFavorites() {
+  favoritesGrid.innerHTML = "";
 
   favorites.forEach(movie => {
     const card = document.createElement("div");
     card.className = "movie-card";
 
     card.innerHTML = `
+      <img src="${movie.poster}" />
       <h3>${movie.title}</h3>
-      <div class="card-actions">
-        <a href="redirect.html?id=${movie.id}" class="btn">▶ Watch</a>
-        <button class="btn danger" onclick="removeFavorite('${movie.id}')">❌ Remove</button>
-      </div>
+      <button class="remove-btn">Remove</button>
     `;
 
-    favoritesContainer.appendChild(card);
+    card.querySelector(".remove-btn").onclick = () => {
+      removeFavorite(movie.id);
+    };
+
+    card.onclick = (e) => {
+      if (!e.target.classList.contains("remove-btn")) {
+        window.location.href = `movie.html?id=${movie.id}`;
+      }
+    };
+
+    favoritesGrid.appendChild(card);
   });
 }
 
-/*************************
-  REMOVE FAVORITE
-**************************/
 function removeFavorite(id) {
-  favorites = favorites.filter(movie => movie.id !== id);
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-  renderFavorites();
+  const updated = favorites.filter(m => m.id != id);
+  localStorage.setItem("favorites", JSON.stringify(updated));
+  location.reload();
 }
-
-/*************************
-  INIT
-**************************/
-renderFavorites();
