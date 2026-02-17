@@ -1,44 +1,40 @@
-const favoritesGrid = document.getElementById("favoritesGrid");
-const emptyMsg = document.getElementById("emptyMsg");
+// favorites.js - FULL FINAL WORKING
 
-const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("favoritesContainer");
+  const emptyMsg = document.getElementById("emptyMsg");
 
-if (favorites.length === 0) {
-  emptyMsg.style.display = "block";
-} else {
-  emptyMsg.style.display = "none";
-  renderFavorites();
-}
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
-function renderFavorites() {
-  favoritesGrid.innerHTML = "";
+  if (favorites.length === 0) {
+    emptyMsg.style.display = "block";
+    return;
+  }
 
   favorites.forEach(movie => {
     const card = document.createElement("div");
     card.className = "movie-card";
 
     card.innerHTML = `
-      <img src="${movie.poster}" />
+      <img src="${movie.poster}" alt="${movie.title}">
       <h3>${movie.title}</h3>
+      <p>⭐ ${movie.rating}</p>
       <button class="remove-btn">Remove</button>
     `;
 
-    card.querySelector(".remove-btn").onclick = () => {
-      removeFavorite(movie.id);
-    };
+    // Remove from favorites
+    card.querySelector(".remove-btn").addEventListener("click", () => {
+      removeFromFavorites(movie.id);
+    });
 
-    card.onclick = (e) => {
-      if (!e.target.classList.contains("remove-btn")) {
-        window.location.href = `movie.html?id=${movie.id}`;
-      }
-    };
-
-    favoritesGrid.appendChild(card);
+    container.appendChild(card);
   });
-}
+});
 
-function removeFavorite(id) {
-  const updated = favorites.filter(m => m.id != id);
-  localStorage.setItem("favorites", JSON.stringify(updated));
+// Remove function
+function removeFromFavorites(id) {
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  favorites = favorites.filter(movie => movie.id !== id);
+  localStorage.setItem("favorites", JSON.stringify(favorites));
   location.reload();
 }
