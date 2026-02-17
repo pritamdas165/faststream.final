@@ -2,59 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FastStream – Watch Movies Online</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Main CSS -->
+  <title>FastStream</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
-  <header class="top-bar">
-    <h1 class="logo">🎬 FastStream</h1>
+<header>
+  <h1>🎬 FastStream</h1>
+  <input id="searchInput" placeholder="Search movies..." />
+  <a href="favorites.html">❤️</a>
+</header>
 
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search movies..." />
-    </div>
-
-    <div class="header-actions">
-      <button id="themeToggle">🌙</button>
-      <a href="favorites.html" class="fav-link">❤️</a>
-    </div>
-  </header>
-
-  <!-- ===== TRENDING ===== -->
-  <<section>
+<section>
   <h2>🔥 Trending</h2>
-  <div id="trendingMovies" class="movie-grid"></div>
+  <div id="trending-movies" class="grid"></div>
 </section>
 
-  <!-- ===== TOP MOVIES ===== -->
-  <<section>
-  <h2>🔥 Trending</h2>
-  <div id="TopMovies" class="movie-grid"></div>
-</section>
-  <!-- ===== RECENTLY VIEWED ===== -->
-  
-   <section>
-  <h2>🔥 RECENTLYVIEWED</h2>
-  <div id="Recentlyviewed" class="movie-grid"></div>
-</section>
+<footer>© 2026 FastStream</footer>
 
-
-  <!-- ===== SEARCH RESULTS ===== -->
-  <<section>
-  <h2>🔥 SearchResults</h2>
-  <div id="SearchResults" class="movie-grid"></div>
-</section
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <p>© 2026 FastStream. All rights reserved.</p>
-  </footer>
-
-  <!-- Main JS -->
-  <script src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
