@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Favorites – FastStream</title>
+  <title>My Favorites | FastStream</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <header class="top-bar">
-    <h1 class="logo">❤️ Favorites</h1>
-    <a href="index.html" class="back-btn">← Home</a>
+  <!-- Header -->
+  <header class="header">
+    <h1>❤️ My Favorite Movies</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="favorites.html" class="active">Favorites</a>
+    </nav>
   </header>
 
-  <section>
-    <div id="favoritesGrid" class="movie-grid"></div>
-    <p id="emptyMsg" class="empty-msg">No favorites added yet.</p>
-  </section>
+  <!-- Favorites Container -->
+  <main>
+    <div id="favoritesContainer" class="movie-grid">
+      <!-- Movies load here -->
+    </div>
 
+    <p id="emptyMsg" class="empty-msg" style="display:none;">
+      😢 No favorite movies added yet.
+    </p>
+  </main>
+
+  <!-- JS -->
   <script src="js/favorites.js"></script>
 </body>
 </html>
