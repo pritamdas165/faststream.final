@@ -1,40 +1,17 @@
-// favorites.js - FULL FINAL WORKING
+import { TMDB_BASE, headers, IMG } from "./config.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("favoritesContainer");
-  const emptyMsg = document.getElementById("emptyMsg");
+const favBox = document.getElementById("fav");
+const favs = JSON.parse(localStorage.getItem("favorites")) || [];
 
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+async function loadFav() {
+  for (let id of favs) {
+    const res = await fetch(`${TMDB_BASE}/movie/${id}`, { headers });
+    const m = await res.json();
 
-  if (favorites.length === 0) {
-    emptyMsg.style.display = "block";
-    return;
+    const d = document.createElement("div");
+    d.className = "card";
+    d.innerHTML = `<img src="${IMG + m.poster_path}"><h3>${m.title}</h3>`;
+    favBox.appendChild(d);
   }
-
-  favorites.forEach(movie => {
-    const card = document.createElement("div");
-    card.className = "movie-card";
-
-    card.innerHTML = `
-      <img src="${movie.poster}" alt="${movie.title}">
-      <h3>${movie.title}</h3>
-      <p>⭐ ${movie.rating}</p>
-      <button class="remove-btn">Remove</button>
-    `;
-
-    // Remove from favorites
-    card.querySelector(".remove-btn").addEventListener("click", () => {
-      removeFromFavorites(movie.id);
-    });
-
-    container.appendChild(card);
-  });
-});
-
-// Remove function
-function removeFromFavorites(id) {
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  favorites = favorites.filter(movie => movie.id !== id);
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-  location.reload();
 }
+loadFav();
