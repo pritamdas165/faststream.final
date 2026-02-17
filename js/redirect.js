@@ -1,27 +1,49 @@
-const timeEl = document.getElementById("time");
-const btn = document.getElementById("continueBtn");
+// redirect.js — FULL FINAL
 
-let timeLeft = 5;
-
+// URL params থেকে data নেওয়া
 const params = new URLSearchParams(window.location.search);
-const type = params.get("to"); // watch or download
+const targetUrl = params.get("url");
+const movieId = params.get("id");
+const actionType = params.get("type"); // watch / download
 
-const timer = setInterval(() => {
-  timeLeft--;
-  timeEl.textContent = timeLeft;
+let counter = 5;
+const msg = document.getElementById("msg");
 
-  if (timeLeft <= 0) {
-    clearInterval(timer);
-    btn.style.display = "inline-block";
+// Analytics save
+function saveAnalytics() {
+  if (!movieId || !actionType) return;
+
+  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
+
+  if (!data[movieId]) {
+    data[movieId] = {
+      watch: 0,
+      download: 0
+    };
   }
-}, 1000);
 
-btn.addEventListener("click", () => {
-  if (type === "watch") {
-    window.location.href = "https://example.com/watch";
-  } else if (type === "download") {
-    window.location.href = "https://example.com/download";
-  } else {
-    window.location.href = "index.html";
-  }
-});
+  if (actionType === "watch") data[movieId].watch++;
+  if (actionType === "download") data[movieId].download++;
+
+  localStorage.setItem("clickAnalytics", JSON.stringify(data));
+}
+
+// Countdown + redirect
+function startRedirect() {
+  const timer = setInterval(() => {
+    msg.innerText = `Redirecting in ${counter} seconds...`;
+    counter--;
+
+    if (counter < 0) {
+      clearInterval(timer);
+      saveAnalytics();
+      if (targetUrl) {
+        window.location.href = targetUrl;
+      } else {
+        msg.innerText = "Invalid redirect link!";
+      }
+    }
+  }, 1000);
+}
+
+startRedirect();
