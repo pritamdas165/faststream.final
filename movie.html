@@ -1,50 +1,49 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Movie Details</title>
+  <title>Watch Movie | FastStream</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
   <!-- Header -->
   <header class="top-bar">
-    <a href="index.html" class="logo">🎬 FastStream</a>
-    <a href="favorites.html" class="btn">❤️ Favorites</a>
+    <a href="index.html" class="back-btn">⬅ Home</a>
+    <h1 id="movieTitle">Movie</h1>
   </header>
 
-  <!-- Movie Details -->
-  <section class="movie-page">
-    <div class="movie-poster">
-      <img id="moviePoster" src="" alt="Movie Poster">
-    </div>
-
-    <div class="movie-info">
-      <h1 id="movieTitle">Loading...</h1>
-      <p id="movieDesc">
-        This is a demo movie description. Streaming demo project.
-      </p>
-
-      <div class="movie-actions">
-        <button id="watchBtn">▶ Watch Now</button>
-        <button id="downloadBtn">⬇ Download</button>
-        <button id="favBtn">❤️ Add to Favorites</button>
-      </div>
-
-      <!-- Continue Watching -->
-      <div class="continue-box" id="continueBox" style="display:none;">
-        <p>⏩ Continue Watching from <span id="continueTime"></span></p>
-      </div>
-    </div>
+  <!-- Movie Player -->
+  <section class="player-section">
+    <video
+      id="moviePlayer"
+      controls
+      width="100%"
+      poster=""
+    >
+      <source id="movieSource" src="" type="video/mp4">
+      Your browser does not support video.
+    </video>
   </section>
 
-  <!-- Recently Viewed -->
-  <section class="section">
-    <h2>Recently Viewed</h2>
-    <div class="movie-row" id="recentMovies"></div>
+  <!-- Action Buttons -->
+  <section class="action-buttons">
+    <button id="watchBtn">▶ Watch</button>
+    <button id="downloadBtn">⬇ Download</button>
+    <button id="favBtn">❤️ Add to Favorites</button>
   </section>
 
+  <!-- Info -->
+  <section class="movie-info">
+    <p id="movieDescription"></p>
+  </section>
+
+  <!-- JS -->
   <script src="js/movie.js"></script>
+
 </body>
 </html>
