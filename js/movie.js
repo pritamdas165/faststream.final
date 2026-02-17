@@ -1,43 +1,28 @@
-const API_KEY = "cc9374659de08b939499a50af4715216";
-const BASE_URL = "https://api.themoviedb.org/3";
-const IMG_URL = "https://image.tmdb.org/t/p/w500";
+import { TMDB_BASE, headers, IMG } from "./config.js";
 
-const trendingContainer = document.getElementById("trendingMovies");
+const id = new URLSearchParams(location.search).get("id");
+const box = document.getElementById("movie");
 
-async function loadTrendingMovies() {
-  try {
-    const res = await fetch(
-      `${BASE_URL}/trending/movie/day?language=en-US&api_key=${API_KEY}`
-    );
+async function loadMovie() {
+  const res = await fetch(`${TMDB_BASE}/movie/${id}?append_to_response=videos`, { headers });
+  const m = await res.json();
 
-    if (!res.ok) {
-      throw new Error("TMDB API Error: " + res.status);
-    }
+  const trailer = m.videos.results.find(v => v.type === "Trailer");
 
-    const data = await res.json();
-    trendingContainer.innerHTML = "";
-
-    data.results.forEach(movie => {
-      const card = document.createElement("div");
-      card.className = "movie-card";
-
-      card.innerHTML = `
-        <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
-        <h3>${movie.title}</h3>
-        <p>⭐ ${movie.vote_average}</p>
-      `;
-
-      card.onclick = () => {
-        window.location.href = `movie.html?id=${movie.id}`;
-      };
-
-      trendingContainer.appendChild(card);
-    });
-
-  } catch (err) {
-    console.error(err);
-    trendingContainer.innerHTML = "<p>Movies failed to load</p>";
-  }
+  box.innerHTML = `
+    <h1>${m.title}</h1>
+    <img src="${IMG + m.poster_path}">
+    <p>${m.overview}</p>
+    ${trailer ? `<iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>` : ""}
+    <button onclick="addFav()">❤️ Favorite</button>
+  `;
 }
 
-loadTrendingMovies();
+window.addFav = () => {
+  const fav = JSON.parse(localStorage.getItem("favorites")) || [];
+  if (!fav.includes(id)) fav.push(id);
+  localStorage.setItem("favorites", JSON.stringify(fav));
+  alert("Added to favorites");
+};
+
+loadMovie();
