@@ -1,106 +1,105 @@
-/********************************
-  CONFIG
-*********************************/
-const API_KEY = "cc9374659de08b939499a50af4715216"; // পরে নিজের key বসাবে
-const BASE_URL = "https://api.themoviedb.org/3";
+/* =========================
+   CONFIG
+========================= */
 const IMG_URL = "https://image.tmdb.org/t/p/w500";
 
-/********************************
-  GET MOVIE ID
-*********************************/
-const params = new URLSearchParams(window.location.search);
-const movieId = params.get("id");
+/* =========================
+   ELEMENTS
+========================= */
+const movie = JSON.parse(localStorage.getItem("currentMovie"));
 
-if (!movieId) {
-  alert("Movie not found");
+const poster = document.getElementById("moviePoster");
+const titleEl = document.getElementById("movieTitle");
+const overview = document.getElementById("movieOverview");
+const rating = document.getElementById("movieRating");
+const date = document.getElementById("movieDate");
+const favBtn = document.getElementById("favBtn");
+const watchBtn = document.getElementById("watchBtn");
+const recentList = document.getElementById("recentList");
+
+/* =========================
+   REDIRECT IF NO MOVIE
+========================= */
+if (!movie) {
   window.location.href = "index.html";
 }
 
-/********************************
-  FETCH MOVIE DETAILS
-*********************************/
-async function loadMovie() {
-  try {
-    const res = await fetch(
-      `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`
-    );
-    const movie = await res.json();
-    renderMovie(movie);
-    saveRecentlyViewed(movie);
-    saveContinueWatching(movie);
-  } catch (err) {
-    console.error(err);
-  }
+/* =========================
+   LOAD MOVIE DATA
+========================= */
+poster.src = movie.poster_path
+  ? IMG_URL + movie.poster_path
+  : "";
+
+titleEl.innerText = movie.title;
+overview.innerText = movie.overview || "No description available.";
+rating.innerText = "⭐ " + (movie.vote_average || "N/A");
+date.innerText = "📅 " + (movie.release_date || "Unknown");
+
+/* =========================
+   FAVORITES
+========================= */
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+function updateFavBtn() {
+  const exists = favorites.find(m => m.id === movie.id);
+  favBtn.innerText = exists ? "❤️ Favorited" : "♡ Favorite";
 }
 
-/********************************
-  RENDER MOVIE
-*********************************/
-function renderMovie(movie) {
-  document.getElementById("moviePoster").src =
-    IMG_URL + movie.poster_path;
-  document.getElementById("movieTitle").innerText = movie.title;
-  document.getElementById("movieOverview").innerText = movie.overview;
-  document.getElementById("movieRating").innerText =
-    "⭐ " + movie.vote_average;
-}
+updateFavBtn();
 
-/********************************
-  CONTINUE WATCHING
-*********************************/
-function saveContinueWatching(movie) {
-  let list = JSON.parse(localStorage.getItem("continueWatching")) || [];
-  list = list.filter((m) => m.id !== movie.id);
-  list.unshift({
-    id: movie.id,
-    title: movie.title,
-    poster: movie.poster_path,
-  });
-  localStorage.setItem(
-    "continueWatching",
-    JSON.stringify(list.slice(0, 10))
-  );
-}
-
-/********************************
-  RECENTLY VIEWED
-*********************************/
-function saveRecentlyViewed(movie) {
-  let list = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-  list = list.filter((m) => m.id !== movie.id);
-  list.unshift({
-    id: movie.id,
-    title: movie.title,
-    poster: movie.poster_path,
-  });
-  localStorage.setItem(
-    "recentlyViewed",
-    JSON.stringify(list.slice(0, 12))
-  );
-}
-
-/********************************
-  FAVORITES
-*********************************/
-function toggleFavorite() {
-  let fav = JSON.parse(localStorage.getItem("favorites")) || [];
-  const exists = fav.find((m) => m.id == movieId);
+favBtn.onclick = () => {
+  const exists = favorites.find(m => m.id === movie.id);
 
   if (exists) {
-    fav = fav.filter((m) => m.id != movieId);
-    alert("Removed from favorites");
+    favorites = favorites.filter(m => m.id !== movie.id);
   } else {
-    fav.push({
-      id: movieId,
-      title: document.getElementById("movieTitle").innerText,
-      poster: document.getElementById("moviePoster").src,
-    });
-    alert("Added to favorites");
+    favorites.push(movie);
   }
-  localStorage.setItem("favorites", JSON.stringify(fav));
+
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  updateFavBtn();
+};
+
+/* =========================
+   WATCH BUTTON
+========================= */
+watchBtn.onclick = () => {
+  localStorage.setItem("watchMovie", JSON.stringify(movie));
+  window.location.href = "redirect.html";
+};
+
+/* =========================
+   RECENTLY VIEWED
+========================= */
+function loadRecent() {
+  const recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+  recentList.innerHTML = "";
+
+  recent.forEach(m => {
+    if (!m.poster_path) return;
+
+    const card = document.createElement("div");
+    card.className = "movie-card small";
+
+    card.innerHTML = `
+      <img src="${IMG_URL + m.poster_path}" alt="${m.title}">
+    `;
+
+    card.onclick = () => {
+      localStorage.setItem("currentMovie", JSON.stringify(m));
+      window.location.reload();
+    };
+
+    recentList.appendChild(card);
+  });
 }
 
-/********************************
-  INIT
-*********************************/
-loadMovie();
+loadRecent();
+
+/* =========================
+   ANALYTICS (BASIC)
+========================= */
+let views = JSON.parse(localStorage.getItem("analytics")) || {};
+views[movie.id] = (views[movie.id] || 0) + 1;
+localStorage.setItem("analytics", JSON.stringify(views));
