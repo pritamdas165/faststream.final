@@ -1,114 +1,106 @@
-/*************************
+/********************************
+  CONFIG
+*********************************/
+const API_KEY = "YOUR_TMDB_API_KEY"; // পরে নিজের key বসাবে
+const BASE_URL = "https://api.themoviedb.org/3";
+const IMG_URL = "https://image.tmdb.org/t/p/w500";
+
+/********************************
   GET MOVIE ID
-**************************/
+*********************************/
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get("id");
 
 if (!movieId) {
-  alert("Invalid movie");
+  alert("Movie not found");
   window.location.href = "index.html";
 }
 
-/*************************
-  SAMPLE MOVIE DATA
-  (Later API replaceable)
-**************************/
-const movie = {
-  id: movieId,
-  title: movieId,
-  video: "https://www.w3schools.com/html/mov_bbb.mp4"
-};
-
-/*************************
-  SET MOVIE DATA
-**************************/
-const titleEl = document.getElementById("movieTitle");
-const videoEl = document.getElementById("videoPlayer");
-const sourceEl = document.getElementById("videoSource");
-const downloadBtn = document.getElementById("downloadBtn");
-const watchBtn = document.getElementById("watchBtn");
-const favBtn = document.getElementById("favBtn");
-
-titleEl.innerText = movie.title;
-sourceEl.src = movie.video;
-downloadBtn.href = movie.video;
-videoEl.load();
-
-/*************************
-  CONTINUE WATCHING
-**************************/
-const progressKey = "progress_" + movie.id;
-
-videoEl.addEventListener("timeupdate", () => {
-  localStorage.setItem(progressKey, videoEl.currentTime);
-});
-
-videoEl.addEventListener("loadedmetadata", () => {
-  const savedTime = localStorage.getItem(progressKey);
-  if (savedTime) {
-    videoEl.currentTime = savedTime;
+/********************************
+  FETCH MOVIE DETAILS
+*********************************/
+async function loadMovie() {
+  try {
+    const res = await fetch(
+      `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`
+    );
+    const movie = await res.json();
+    renderMovie(movie);
+    saveRecentlyViewed(movie);
+    saveContinueWatching(movie);
+  } catch (err) {
+    console.error(err);
   }
-});
-
-/*************************
-  ANALYTICS
-**************************/
-let analytics = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
-
-if (!analytics[movie.id]) {
-  analytics[movie.id] = {
-    watch: 0,
-    download: 0,
-    open: 0
-  };
 }
 
-analytics[movie.id].open++;
-localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
+/********************************
+  RENDER MOVIE
+*********************************/
+function renderMovie(movie) {
+  document.getElementById("moviePoster").src =
+    IMG_URL + movie.poster_path;
+  document.getElementById("movieTitle").innerText = movie.title;
+  document.getElementById("movieOverview").innerText = movie.overview;
+  document.getElementById("movieRating").innerText =
+    "⭐ " + movie.vote_average;
+}
 
-watchBtn.addEventListener("click", () => {
-  analytics[movie.id].watch++;
-  localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
-  alert("Watch counted ✅");
-});
+/********************************
+  CONTINUE WATCHING
+*********************************/
+function saveContinueWatching(movie) {
+  let list = JSON.parse(localStorage.getItem("continueWatching")) || [];
+  list = list.filter((m) => m.id !== movie.id);
+  list.unshift({
+    id: movie.id,
+    title: movie.title,
+    poster: movie.poster_path,
+  });
+  localStorage.setItem(
+    "continueWatching",
+    JSON.stringify(list.slice(0, 10))
+  );
+}
 
-downloadBtn.addEventListener("click", () => {
-  analytics[movie.id].download++;
-  localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
-});
+/********************************
+  RECENTLY VIEWED
+*********************************/
+function saveRecentlyViewed(movie) {
+  let list = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+  list = list.filter((m) => m.id !== movie.id);
+  list.unshift({
+    id: movie.id,
+    title: movie.title,
+    poster: movie.poster_path,
+  });
+  localStorage.setItem(
+    "recentlyViewed",
+    JSON.stringify(list.slice(0, 12))
+  );
+}
 
-/*************************
+/********************************
   FAVORITES
-**************************/
-let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-
-function updateFavBtn() {
-  const exists = favorites.find(m => m.id === movie.id);
-  favBtn.innerText = exists ? "💔 Remove Favorite" : "❤️ Add Favorite";
-}
-
-favBtn.addEventListener("click", () => {
-  const exists = favorites.find(m => m.id === movie.id);
+*********************************/
+function toggleFavorite() {
+  let fav = JSON.parse(localStorage.getItem("favorites")) || [];
+  const exists = fav.find((m) => m.id == movieId);
 
   if (exists) {
-    favorites = favorites.filter(m => m.id !== movie.id);
+    fav = fav.filter((m) => m.id != movieId);
+    alert("Removed from favorites");
   } else {
-    favorites.push({ id: movie.id, title: movie.title });
+    fav.push({
+      id: movieId,
+      title: document.getElementById("movieTitle").innerText,
+      poster: document.getElementById("moviePoster").src,
+    });
+    alert("Added to favorites");
   }
+  localStorage.setItem("favorites", JSON.stringify(fav));
+}
 
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-  updateFavBtn();
-});
-
-updateFavBtn();
-
-/*************************
-  RECENTLY VIEWED
-**************************/
-let recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-
-recent = recent.filter(m => m.id !== movie.id);
-recent.unshift({ id: movie.id, title: movie.title });
-recent = recent.slice(0, 10);
-
-localStorage.setItem("recentlyViewed", JSON.stringify(recent));
+/********************************
+  INIT
+*********************************/
+loadMovie();
