@@ -1,43 +1,35 @@
- const API_KEY = "cc9374659de08b939499a50af4715216";
-const BASE_URL = "https://api.themoviedb.org/3";
-const IMG_URL = "https://image.tmdb.org/t/p/w500";
+import { TMDB_BASE, headers } from "./config.js";
 
-const trendingContainer = document.getElementById("trendingMovies");
+const trendingEl = document.getElementById("trending-movies");
 
-async function loadTrendingMovies() {
+async function loadTrending() {
   try {
-    const res = await fetch(
-      `${BASE_URL}/trending/movie/day?language=en-US&api_key=${API_KEY}`
-    );
-
-    if (!res.ok) {
-      throw new Error("TMDB API Error: " + res.status);
-    }
+    const res = await fetch(`${TMDB_BASE}/trending/movie/week`, {
+      headers
+    });
 
     const data = await res.json();
-    trendingContainer.innerHTML = "";
+    trendingEl.innerHTML = "";
 
     data.results.forEach(movie => {
       const card = document.createElement("div");
       card.className = "movie-card";
 
       card.innerHTML = `
-        <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" />
         <h3>${movie.title}</h3>
-        <p>⭐ ${movie.vote_average}</p>
       `;
 
       card.onclick = () => {
-        window.location.href = `movie.html?id=${movie.id}`;
+        window.location.href = `redirect.html?id=${movie.id}`;
       };
 
-      trendingContainer.appendChild(card);
+      trendingEl.appendChild(card);
     });
 
   } catch (err) {
-    console.error(err);
-    trendingContainer.innerHTML = "<p>Movies failed to load</p>";
+    console.error("TMDB error:", err);
   }
 }
 
-loadTrendingMovies();
+loadTrending();
