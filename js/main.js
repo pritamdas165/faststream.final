@@ -1,99 +1,137 @@
-// SAMPLE MOVIE DATA
+/* =========================
+   GLOBAL DATA (Demo Movies)
+========================= */
 const movies = [
-  { id: 1, title: "Inception", poster: "https://via.placeholder.com/300x450?text=Inception" },
-  { id: 2, title: "Interstellar", poster: "https://via.placeholder.com/300x450?text=Interstellar" },
-  { id: 3, title: "Joker", poster: "https://via.placeholder.com/300x450?text=Joker" },
-  { id: 4, title: "Avengers", poster: "https://via.placeholder.com/300x450?text=Avengers" }
+  { id: 1, title: "Inception", poster: "https://i.imgur.com/Yo0pE5M.jpg", trending: true },
+  { id: 2, title: "Interstellar", poster: "https://i.imgur.com/Exw6kZx.jpg", trending: true },
+  { id: 3, title: "Joker", poster: "https://i.imgur.com/0rVeh4F.jpg", trending: false },
+  { id: 4, title: "Avengers", poster: "https://i.imgur.com/2fDh8YF.jpg", trending: true },
+  { id: 5, title: "Batman", poster: "https://i.imgur.com/fY2Xy5K.jpg", trending: false }
 ];
 
-const movieList = document.getElementById("movieList");
-const trendingMovies = document.getElementById("trendingMovies");
-const recentMovies = document.getElementById("recentMovies");
+/* =========================
+   ELEMENTS
+========================= */
+const allMoviesGrid = document.getElementById("allMovies");
+const trendingRow = document.getElementById("trendingMovies");
+const recentRow = document.getElementById("recentMovies");
 const searchInput = document.getElementById("searchInput");
-const searchBtn = document.getElementById("searchBtn");
-const searchHistoryBox = document.getElementById("searchHistory");
 const themeToggle = document.getElementById("themeToggle");
 
-// LOAD MOVIES
-function renderMovies(container, list) {
-  container.innerHTML = "";
+/* =========================
+   INIT
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  loadTheme();
+  renderAllMovies(movies);
+  renderTrending();
+  renderRecentlyViewed();
+});
+
+/* =========================
+   RENDER FUNCTIONS
+========================= */
+function renderAllMovies(list) {
+  if (!allMoviesGrid) return;
+  allMoviesGrid.innerHTML = "";
   list.forEach(movie => {
-    const div = document.createElement("div");
-    div.className = "movie-card";
-    div.innerHTML = `
-      <img src="${movie.poster}">
-      <h3>${movie.title}</h3>
-    `;
-    div.onclick = () => openMovie(movie);
-    container.appendChild(div);
+    allMoviesGrid.appendChild(createMovieCard(movie));
   });
 }
 
-// OPEN MOVIE
+function renderTrending() {
+  if (!trendingRow) return;
+  trendingRow.innerHTML = "";
+  movies.filter(m => m.trending).forEach(movie => {
+    trendingRow.appendChild(createMovieCard(movie, true));
+  });
+}
+
+function renderRecentlyViewed() {
+  if (!recentRow) return;
+  const recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+  recentRow.innerHTML = "";
+  recent.forEach(movie => {
+    recentRow.appendChild(createMovieCard(movie, true));
+  });
+}
+
+/* =========================
+   MOVIE CARD
+========================= */
+function createMovieCard(movie, small = false) {
+  const card = document.createElement("div");
+  card.className = "movie-card";
+  card.innerHTML = `
+    <img src="${movie.poster}" alt="${movie.title}">
+    <h3>${movie.title}</h3>
+    <button>View</button>
+  `;
+  card.onclick = () => openMovie(movie);
+  return card;
+}
+
+/* =========================
+   OPEN MOVIE
+========================= */
 function openMovie(movie) {
   saveRecentlyViewed(movie);
   window.location.href = `movie.html?id=${movie.id}`;
 }
 
-// SEARCH
-searchBtn.onclick = () => {
-  const q = searchInput.value.trim();
-  if (!q) return;
-  saveSearch(q);
-  const result = movies.filter(m => m.title.toLowerCase().includes(q.toLowerCase()));
-  renderMovies(movieList, result);
-};
-
-// SEARCH HISTORY
-function saveSearch(q) {
-  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  if (!history.includes(q)) history.unshift(q);
-  history = history.slice(0, 5);
-  localStorage.setItem("searchHistory", JSON.stringify(history));
-  renderSearchHistory();
-}
-
-function renderSearchHistory() {
-  const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  searchHistoryBox.innerHTML = "";
-  history.forEach(h => {
-    const span = document.createElement("span");
-    span.className = "chip";
-    span.innerText = h;
-    span.onclick = () => {
-      searchInput.value = h;
-      searchBtn.click();
-    };
-    searchHistoryBox.appendChild(span);
-  });
-}
-
-// RECENTLY VIEWED
+/* =========================
+   RECENTLY VIEWED
+========================= */
 function saveRecentlyViewed(movie) {
   let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
   recent = recent.filter(m => m.id !== movie.id);
   recent.unshift(movie);
-  recent = recent.slice(0, 6);
+  if (recent.length > 10) recent.pop();
   localStorage.setItem("recentMovies", JSON.stringify(recent));
 }
 
-function renderRecentlyViewed() {
-  const recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
-  renderMovies(recentMovies, recent);
+/* =========================
+   SEARCH
+========================= */
+if (searchInput) {
+  searchInput.addEventListener("input", e => {
+    const value = e.target.value.toLowerCase();
+    const filtered = movies.filter(m =>
+      m.title.toLowerCase().includes(value)
+    );
+    renderAllMovies(filtered);
+    saveSearchHistory(value);
+  });
 }
 
-// THEME
-themeToggle.onclick = () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme", document.body.classList.contains("dark"));
-};
-
-if (localStorage.getItem("theme") === "true") {
-  document.body.classList.add("dark");
+/* =========================
+   SEARCH HISTORY
+========================= */
+function saveSearchHistory(term) {
+  if (!term) return;
+  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  history = history.filter(h => h !== term);
+  history.unshift(term);
+  if (history.length > 10) history.pop();
+  localStorage.setItem("searchHistory", JSON.stringify(history));
 }
 
-// INIT
-renderMovies(movieList, movies);
-renderMovies(trendingMovies, movies.slice(0, 3));
-renderRecentlyViewed();
-renderSearchHistory();
+/* =========================
+   THEME (DARK / LIGHT)
+========================= */
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem(
+      "theme",
+      document.body.classList.contains("dark") ? "dark" : "light"
+    );
+  });
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem("theme");
+  if (saved === "dark") {
+    document.body.classList.add("dark");
+  }
+}
