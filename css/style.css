@@ -1,30 +1,25 @@
-/* =========================
-   Global Reset & Variables
-========================= */
+/* =====================
+   RESET & BASE
+===================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 :root {
-  --bg: #0f172a;
-  --bg-soft: #020617;
-  --card: #020617;
-  --text: #e5e7eb;
-  --muted: #94a3b8;
-  --primary: #38bdf8;
-  --accent: #22c55e;
-  --danger: #ef4444;
+  --bg: #ffffff;
+  --text: #111111;
+  --card: #f2f2f2;
+  --accent: #ff3d3d;
 }
 
-body.light {
-  --bg: #f8fafc;
-  --bg-soft: #e5e7eb;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #475569;
+body.dark {
+  --bg: #121212;
+  --text: #f1f1f1;
+  --card: #1f1f1f;
+  --accent: #ff5252;
 }
 
 body {
@@ -33,241 +28,158 @@ body {
   min-height: 100vh;
 }
 
-/* =========================
-   Header / Navbar
-========================= */
+/* =====================
+   HEADER
+===================== */
 header {
-  background: var(--bg-soft);
+  background: var(--card);
   padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 10;
 }
 
-.navbar {
+header h1 {
+  color: var(--accent);
+}
+
+.header-actions {
   display: flex;
+  gap: 10px;
   align-items: center;
-  justify-content: space-between;
-  gap: 15px;
 }
 
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--primary);
-}
-
-.search-box {
-  flex: 1;
-  max-width: 500px;
-  position: relative;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 10px 40px 10px 14px;
-  border-radius: 8px;
+#searchInput {
+  padding: 8px 12px;
+  border-radius: 5px;
   border: none;
   outline: none;
-  background: var(--card);
-  color: var(--text);
 }
 
-.search-box i {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--muted);
-}
-
-.nav-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.nav-actions button {
-  background: var(--card);
+#themeToggle {
+  background: var(--accent);
   border: none;
-  color: var(--text);
-  padding: 8px 12px;
-  border-radius: 8px;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.nav-actions button:hover {
-  background: var(--primary);
-  color: #000;
+.fav-link {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: bold;
 }
 
-/* =========================
-   Section Layout
-========================= */
+/* =====================
+   MAIN SECTIONS
+===================== */
+main {
+  padding: 20px;
+}
+
 section {
-  padding: 25px 20px;
+  margin-bottom: 30px;
 }
 
-.section-title {
-  font-size: 20px;
-  margin-bottom: 15px;
-  font-weight: 600;
+section h2 {
+  margin-bottom: 12px;
+  border-left: 5px solid var(--accent);
+  padding-left: 10px;
 }
 
-/* =========================
-   Movie Grid & Cards
-========================= */
+/* =====================
+   MOVIE LAYOUTS
+===================== */
+.movie-row {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
 }
 
 .movie-card {
   background: var(--card);
-  border-radius: 12px;
-  overflow: hidden;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .movie-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .movie-card img {
   width: 100%;
-  height: 230px;
+  height: 200px;
   object-fit: cover;
-}
-
-.movie-card .info {
-  padding: 10px;
-}
-
-.movie-card .title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.movie-card .meta {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* =========================
-   Buttons
-========================= */
-.btn {
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: #000;
-}
-
-.btn-success {
-  background: var(--accent);
-  color: #000;
-}
-
-.btn-danger {
-  background: var(--danger);
-  color: #fff;
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--muted);
-  color: var(--text);
-}
-
-/* =========================
-   Movie Details Page
-========================= */
-.movie-details {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 25px;
-}
-
-.movie-details img {
-  width: 100%;
-  border-radius: 14px;
-}
-
-.movie-info h1 {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
-
-.movie-info p {
-  color: var(--muted);
-  margin-bottom: 12px;
-  line-height: 1.6;
-}
-
-.action-row {
-  display: flex;
-  gap: 12px;
-  margin-top: 15px;
-}
-
-/* =========================
-   Continue Watching
-========================= */
-.progress-bar {
-  background: #1e293b;
   border-radius: 6px;
-  overflow: hidden;
-  height: 6px;
+}
+
+.movie-card h3 {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+.movie-card button {
   margin-top: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
 }
 
-.progress {
-  height: 100%;
-  background: var(--primary);
-  width: 0%;
-}
-
-/* =========================
-   Favorites
-========================= */
-.favorite {
-  color: var(--danger);
-}
-
-/* =========================
-   Footer
-========================= */
+/* =====================
+   FOOTER
+===================== */
 footer {
+  background: var(--card);
+  padding: 15px;
   text-align: center;
-  padding: 20px;
-  color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 
-/* =========================
-   Responsive
-========================= */
+/* =====================
+   SCROLLBAR
+===================== */
+::-webkit-scrollbar {
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
 @media (max-width: 768px) {
-  .movie-details {
-    grid-template-columns: 1fr;
+  header {
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .navbar {
-    flex-wrap: wrap;
-  }
-
-  .search-box {
-    order: 3;
+  .header-actions {
     width: 100%;
+    justify-content: space-between;
+  }
+
+  #searchInput {
+    flex: 1;
   }
 }
