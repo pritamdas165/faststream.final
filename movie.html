@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Movie Details</title>
+  <title>Movie Details | FastStream</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -10,32 +10,42 @@
 
   <header class="top-bar">
     <a href="index.html" class="back-btn">⬅ Back</a>
-    <h2 id="movieTitle">Movie</h2>
+    <h2 id="movieTitle">Loading...</h2>
     <button id="favBtn">♡ Favorite</button>
   </header>
 
   <main class="movie-page">
     <div class="movie-left">
-      <img id="moviePoster" src="" alt="Poster">
+      <img id="moviePoster" />
     </div>
 
     <div class="movie-right">
       <p id="movieOverview"></p>
 
-      <div class="movie-meta">
-        <span id="movieRating"></span>
-        <span id="movieDate"></span>
-      </div>
+      <p><strong>Genres:</strong> <span id="movieGenres"></span></p>
+      <p><strong>Rating:</strong> <span id="movieRating"></span></p>
+      <p><strong>Release:</strong> <span id="movieDate"></span></p>
 
-      <button id="watchBtn" class="watch-btn">
-        ▶ Watch Now
-      </button>
+      <button id="watchBtn" class="watch-btn">▶ Watch Trailer</button>
     </div>
   </main>
 
-  <section class="recent-section">
-    <h3>Recently Viewed</h3>
-    <div id="recentList" class="movie-row"></div>
+  <!-- TRAILER -->
+  <section class="section">
+    <h3>🎞 Trailer</h3>
+    <div id="trailerBox"></div>
+  </section>
+
+  <!-- CAST -->
+  <section class="section">
+    <h3>👥 Cast</h3>
+    <div id="castList" class="movie-row"></div>
+  </section>
+
+  <!-- SIMILAR -->
+  <section class="section">
+    <h3>🔁 Similar Movies</h3>
+    <div id="similarMovies" class="movie-grid"></div>
   </section>
 
   <script src="js/movie.js"></script>
