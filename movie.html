@@ -1,49 +1,101 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Watch Movie | FastStream</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- CSS -->
+  <title>Movie Player</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
 
-  <!-- Header -->
-  <header class="top-bar">
-    <a href="index.html" class="back-btn">⬅ Home</a>
-    <h1 id="movieTitle">Movie</h1>
-  </header>
+<header class="topbar">
+  <a href="index.html">⬅ Back</a>
+  <h2 id="movieTitle">Loading...</h2>
+</header>
 
-  <!-- Movie Player -->
-  <section class="player-section">
-    <video
-      id="moviePlayer"
-      controls
-      width="100%"
-      poster=""
-    >
-      <source id="movieSource" src="" type="video/mp4">
-      Your browser does not support video.
-    </video>
-  </section>
+<main class="player-page">
 
-  <!-- Action Buttons -->
-  <section class="action-buttons">
-    <button id="watchBtn">▶ Watch</button>
+  <!-- VIDEO PLAYER -->
+  <video id="videoPlayer" controls width="100%">
+    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    Your browser does not support video.
+  </video>
+
+  <!-- ACTION BUTTONS -->
+  <div class="movie-actions">
+    <button id="watchBtn">▶ Watched</button>
     <button id="downloadBtn">⬇ Download</button>
-    <button id="favBtn">❤️ Add to Favorites</button>
-  </section>
+  </div>
 
-  <!-- Info -->
-  <section class="movie-info">
-    <p id="movieDescription"></p>
-  </section>
+</main>
 
-  <!-- JS -->
-  <script src="js/movie.js"></script>
+<script>
+/***********************
+  GET MOVIE ID
+************************/
+const params = new URLSearchParams(window.location.search);
+const movieId = params.get("id");
+
+/***********************
+  MOVIE DATA (same ids)
+************************/
+const movies = [
+  { id: "m1", title: "Avengers Endgame" },
+  { id: "m2", title: "Inception" },
+  { id: "m3", title: "Interstellar" },
+  { id: "m4", title: "Joker" }
+];
+
+const movie = movies.find(m => m.id === movieId);
+if (!movie) {
+  alert("Movie not found");
+  location.href = "index.html";
+}
+
+document.getElementById("movieTitle").innerText = movie.title;
+
+/***********************
+  CONTINUE WATCHING
+************************/
+const video = document.getElementById("videoPlayer");
+const progressKey = "progress_" + movie.id;
+
+video.currentTime = localStorage.getItem(progressKey) || 0;
+
+video.addEventListener("timeupdate", () => {
+  localStorage.setItem(progressKey, video.currentTime);
+});
+
+/***********************
+  ANALYTICS
+************************/
+function trackClick(type) {
+  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
+  if (!data[movie.id]) {
+    data[movie.id] = { title: movie.title, watch: 0, download: 0 };
+  }
+  data[movie.id][type]++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(data));
+}
+
+document.getElementById("watchBtn").onclick = () => {
+  trackClick("watch");
+  alert("Watch counted");
+};
+
+document.getElementById("downloadBtn").onclick = () => {
+  trackClick("download");
+  alert("Download counted");
+};
+
+/***********************
+  RECENTLY VIEWED
+************************/
+let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+recent = recent.filter(m => m.id !== movie.id);
+recent.unshift(movie);
+recent = recent.slice(0, 6);
+localStorage.setItem("recentMovies", JSON.stringify(recent));
+</script>
 
 </body>
 </html>
