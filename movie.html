@@ -2,99 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Movie Player</title>
+  <title>Watch Movie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
-<header class="topbar">
-  <a href="index.html">⬅ Back</a>
-  <h2 id="movieTitle">Loading...</h2>
+<header class="top-bar">
+  <a href="index.html" class="back-link">⬅ Home</a>
+  <h1 id="movieTitle">Loading...</h1>
+  <button id="favBtn" class="btn">❤️ Favorite</button>
 </header>
 
-<main class="player-page">
-
-  <!-- VIDEO PLAYER -->
-  <video id="videoPlayer" controls width="100%">
-    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+<section class="player-section">
+  <video id="videoPlayer" controls autoplay width="100%">
+    <source id="videoSource" src="" type="video/mp4">
     Your browser does not support video.
   </video>
+</section>
 
-  <!-- ACTION BUTTONS -->
-  <div class="movie-actions">
-    <button id="watchBtn">▶ Watched</button>
-    <button id="downloadBtn">⬇ Download</button>
-  </div>
-
-</main>
+<section class="actions">
+  <button class="btn" id="watchBtn">▶ Watched</button>
+  <a id="downloadBtn" class="btn" href="#" download>⬇ Download</a>
+</section>
 
 <script>
-/***********************
+/*************************
   GET MOVIE ID
-************************/
+**************************/
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get("id");
 
-/***********************
-  MOVIE DATA (same ids)
-************************/
-const movies = [
-  { id: "m1", title: "Avengers Endgame" },
-  { id: "m2", title: "Inception" },
-  { id: "m3", title: "Interstellar" },
-  { id: "m4", title: "Joker" }
-];
-
-const movie = movies.find(m => m.id === movieId);
-if (!movie) {
-  alert("Movie not found");
+if (!movieId) {
+  alert("Invalid movie");
   location.href = "index.html";
 }
 
-document.getElementById("movieTitle").innerText = movie.title;
+/*************************
+  SAMPLE MOVIE DATA
+  (Later API replaceable)
+**************************/
+const movie = {
+  id: movieId,
+  title: movieId,
+  video: "https://www.w3schools.com/html/mov_bbb.mp4"
+};
 
-/***********************
+/*************************
+  SET MOVIE
+**************************/
+document.getElementById("movieTitle").innerText = movie.title;
+document.getElementById("videoSource").src = movie.video;
+document.getElementById("downloadBtn").href = movie.video;
+
+const player = document.getElementById("videoPlayer");
+player.load();
+
+/*************************
   CONTINUE WATCHING
-************************/
-const video = document.getElementById("videoPlayer");
+**************************/
 const progressKey = "progress_" + movie.id;
 
-video.currentTime = localStorage.getItem(progressKey) || 0;
-
-video.addEventListener("timeupdate", () => {
-  localStorage.setItem(progressKey, video.currentTime);
+player.addEventListener("timeupdate", () => {
+  localStorage.setItem(progressKey, player.currentTime);
 });
 
-/***********************
-  ANALYTICS
-************************/
-function trackClick(type) {
-  let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
-  if (!data[movie.id]) {
-    data[movie.id] = { title: movie.title, watch: 0, download: 0 };
+player.addEventListener("loadedmetadata", () => {
+  const savedTime = localStorage.getItem(progressKey);
+  if (savedTime) {
+    player.currentTime = savedTime;
   }
-  data[movie.id][type]++;
-  localStorage.setItem("clickAnalytics", JSON.stringify(data));
+});
+
+/*************************
+  ANALYTICS
+**************************/
+let analytics = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
+
+if (!analytics[movie.id]) {
+  analytics[movie.id] = { watch: 0, download: 0, open: 0 };
 }
 
 document.getElementById("watchBtn").onclick = () => {
-  trackClick("watch");
-  alert("Watch counted");
+  analytics[movie.id].watch++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
+  alert("Watch counted ✅");
 };
 
 document.getElementById("downloadBtn").onclick = () => {
-  trackClick("download");
-  alert("Download counted");
+  analytics[movie.id].download++;
+  localStorage.setItem("clickAnalytics", JSON.stringify(analytics));
 };
 
-/***********************
+/*************************
+  FAVORITES
+**************************/
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+const favBtn = document.getElementById("favBtn");
+
+function updateFavBtn() {
+  const exists = favorites.find(m => m.id === movie.id);
+  favBtn.innerText = exists ? "💔 Remove Favorite" : "❤️ Add Favorite";
+}
+
+favBtn.onclick = () => {
+  const exists = favorites.find(m => m.id === movie.id);
+  if (exists) {
+    favorites = favorites.filter(m => m.id !== movie.id);
+  } else {
+    favorites.push({ id: movie.id, title: movie.title });
+  }
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  updateFavBtn();
+};
+
+updateFavBtn();
+
+/*************************
   RECENTLY VIEWED
-************************/
-let recent = JSON.parse(localStorage.getItem("recentMovies")) || [];
+**************************/
+let recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
 recent = recent.filter(m => m.id !== movie.id);
-recent.unshift(movie);
-recent = recent.slice(0, 6);
-localStorage.setItem("recentMovies", JSON.stringify(recent));
+recent.unshift({ id: movie.id, title: movie.title });
+recent = recent.slice(0, 10);
+localStorage.setItem("recentlyViewed", JSON.stringify(recent));
 </script>
 
 </body>
