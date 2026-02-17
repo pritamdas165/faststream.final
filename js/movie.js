@@ -1,155 +1,88 @@
-// ===============================
-// Get Movie ID from URL
-// ===============================
+// Get movie from URL
 const params = new URLSearchParams(window.location.search);
-const movieId = params.get("id") || "demo1";
+const movieId = params.get("id");
 
-// ===============================
-// Demo Movie Database
-// ===============================
-const moviesDB = [
-  {
-    id: "demo1",
+// Demo movie database
+const movies = {
+  "1": {
+    id: "1",
     title: "Demo Movie One",
-    poster: "https://via.placeholder.com/300x450?text=Movie+1",
-    desc: "This is a demo movie description. Streaming test project."
+    src: "https://www.w3schools.com/html/mov_bbb.mp4",
+    description: "This is a demo movie for FastStream."
   },
-  {
-    id: "demo2",
+  "2": {
+    id: "2",
     title: "Demo Movie Two",
-    poster: "https://via.placeholder.com/300x450?text=Movie+2",
-    desc: "Second demo movie for testing purpose."
+    src: "https://www.w3schools.com/html/movie.mp4",
+    description: "Another demo movie."
   }
-];
+};
 
-// ===============================
-// Load Movie Details
-// ===============================
-const movie = moviesDB.find(m => m.id === movieId) || moviesDB[0];
+const movie = movies[movieId];
 
-document.getElementById("movieTitle").innerText = movie.title;
-document.getElementById("moviePoster").src = movie.poster;
-document.getElementById("movieDesc").innerText = movie.desc;
+if (!movie) {
+  window.location.href = "index.html";
+}
 
-// ===============================
-// Analytics (Watch / Download)
-// ===============================
-function trackClick(movie, type) {
+// DOM
+const titleEl = document.getElementById("movieTitle");
+const sourceEl = document.getElementById("movieSource");
+const player = document.getElementById("moviePlayer");
+const descEl = document.getElementById("movieDescription");
+
+titleEl.innerText = movie.title;
+sourceEl.src = movie.src;
+descEl.innerText = movie.description;
+player.load();
+
+// ---- Recently Viewed ----
+let recent = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+recent = recent.filter(m => m.id !== movie.id);
+recent.unshift(movie);
+localStorage.setItem("recentlyViewed", JSON.stringify(recent.slice(0, 10)));
+
+// ---- Continue Watching ----
+player.addEventListener("timeupdate", () => {
+  const data = JSON.parse(localStorage.getItem("continueWatching")) || {};
+  data[movie.id] = {
+    ...movie,
+    time: player.currentTime
+  };
+  localStorage.setItem("continueWatching", JSON.stringify(data));
+});
+
+// Resume
+const cw = JSON.parse(localStorage.getItem("continueWatching")) || {};
+if (cw[movie.id]) {
+  player.currentTime = cw[movie.id].time || 0;
+}
+
+// ---- Analytics ----
+function trackClick(type) {
   let data = JSON.parse(localStorage.getItem("clickAnalytics")) || {};
-
   if (!data[movie.id]) {
-    data[movie.id] = {
-      title: movie.title,
-      watch: 0,
-      download: 0
-    };
+    data[movie.id] = { title: movie.title, watch: 0, download: 0 };
   }
-
   data[movie.id][type]++;
   localStorage.setItem("clickAnalytics", JSON.stringify(data));
 }
 
-// ===============================
-// Continue Watching
-// ===============================
-function saveContinueWatching(movie) {
-  let continueData =
-    JSON.parse(localStorage.getItem("continueWatching")) || {};
+document.getElementById("watchBtn").onclick = () => {
+  trackClick("watch");
+  player.play();
+};
 
-  continueData[movie.id] = {
-    title: movie.title,
-    time: new Date().toLocaleTimeString()
-  };
+document.getElementById("downloadBtn").onclick = () => {
+  trackClick("download");
+  window.open(movie.src, "_blank");
+};
 
-  localStorage.setItem(
-    "continueWatching",
-    JSON.stringify(continueData)
-  );
-}
-
-function loadContinueWatching(movie) {
-  let continueData =
-    JSON.parse(localStorage.getItem("continueWatching")) || {};
-
-  if (continueData[movie.id]) {
-    document.getElementById("continueBox").style.display = "block";
-    document.getElementById("continueTime").innerText =
-      continueData[movie.id].time;
-  }
-}
-
-// ===============================
-// Recently Viewed
-// ===============================
-function addRecentlyViewed(movie) {
-  let recent =
-    JSON.parse(localStorage.getItem("recentMovies")) || [];
-
-  recent = recent.filter(m => m.id !== movie.id);
-  recent.unshift(movie);
-
-  if (recent.length > 5) recent.pop();
-
-  localStorage.setItem("recentMovies", JSON.stringify(recent));
-}
-
-function loadRecentlyViewed() {
-  let recent =
-    JSON.parse(localStorage.getItem("recentMovies")) || [];
-
-  const container = document.getElementById("recentMovies");
-  container.innerHTML = "";
-
-  recent.forEach(m => {
-    const div = document.createElement("div");
-    div.className = "movie-card";
-    div.innerHTML = `
-      <a href="movie.html?id=${m.id}">
-        <img src="${m.poster}" alt="${m.title}">
-        <p>${m.title}</p>
-      </a>
-    `;
-    container.appendChild(div);
-  });
-}
-
-// ===============================
-// Favorites
-// ===============================
-function addToFavorites(movie) {
-  let favs =
-    JSON.parse(localStorage.getItem("favorites")) || [];
-
-  if (!favs.find(m => m.id === movie.id)) {
-    favs.push(movie);
-    localStorage.setItem("favorites", JSON.stringify(favs));
+// ---- Favorites ----
+document.getElementById("favBtn").onclick = () => {
+  let fav = JSON.parse(localStorage.getItem("favorites")) || [];
+  if (!fav.find(m => m.id === movie.id)) {
+    fav.push(movie);
+    localStorage.setItem("favorites", JSON.stringify(fav));
     alert("Added to Favorites ❤️");
-  } else {
-    alert("Already in Favorites");
   }
-}
-
-// ===============================
-// Button Events
-// ===============================
-document.getElementById("watchBtn").addEventListener("click", () => {
-  trackClick(movie, "watch");
-  saveContinueWatching(movie);
-  window.location.href = "redirect.html?type=watch&id=" + movie.id;
-});
-
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  trackClick(movie, "download");
-  window.location.href = "redirect.html?type=download&id=" + movie.id;
-});
-
-document.getElementById("favBtn").addEventListener("click", () => {
-  addToFavorites(movie);
-});
-
-// ===============================
-// Init
-// ===============================
-addRecentlyViewed(movie);
-loadRecentlyViewed();
-loadContinueWatching(movie);
+};
