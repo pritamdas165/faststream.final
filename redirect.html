@@ -1,61 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Please Wait...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Redirecting...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
   <style>
-    body{
-      margin:0;
-      background:#0f0f0f;
-      color:#fff;
-      font-family:Arial, Helvetica, sans-serif;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      text-align:center;
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
     }
-    .box{
-      background:#1c1c1c;
-      padding:25px;
-      border-radius:8px;
-      max-width:320px;
-      width:100%;
-    }
-    .ads{
-      background:#000;
-      padding:12px;
-      margin:15px 0;
-      font-size:13px;
-      color:#aaa;
-    }
-    button{
-      padding:10px 16px;
-      border:none;
-      background:#e50914;
-      color:#fff;
-      border-radius:6px;
-      cursor:pointer;
-      display:none;
+    .box {
+      max-width: 400px;
     }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Please wait...</h2>
-  <p>Continue in <span id="time">5</span> seconds</p>
-
-  <div class="ads">
-    ADS PLACEHOLDER  
-    <br>
-    (external ads can be loaded here)
+  <div class="box">
+    <h1>⏳ Please Wait...</h1>
+    <p id="msg">Redirecting...</p>
   </div>
 
-  <button id="continueBtn">Continue</button>
-</div>
-
-<script src="js/redirect.js"></script>
+  <script src="js/redirect.js"></script>
 </body>
 </html>
