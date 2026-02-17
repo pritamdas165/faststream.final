@@ -2,60 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>FastStream</title>
+  <title>FastStream – Movies</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
 
-  <!-- Header -->
+  <!-- Top Bar -->
   <header class="top-bar">
-    <h1 class="logo">FastStream</h1>
+    <h1 class="logo">🎬 FastStream</h1>
 
-    <div class="search-box">
+    <div class="top-actions">
       <input type="text" id="searchInput" placeholder="Search movies..." />
+      <button id="themeToggle">🌙</button>
+      <a href="favorites.html" class="fav-link">❤️ Favorites</a>
     </div>
-
-    <button id="themeToggle">🌙</button>
   </header>
-
-  <!-- Recently Viewed -->
-  <section class="section">
-    <h2>Recently Viewed</h2>
-    <div id="recentlyViewed" class="movie-row"></div>
-  </section>
-
-  <!-- Continue Watching -->
-  <section class="section">
-    <h2>Continue Watching</h2>
-    <div id="continueWatching" class="movie-row"></div>
-  </section>
 
   <!-- Trending -->
   <section class="section">
-    <h2>Trending</h2>
-    <div id="trendingMovies" class="movie-row"></div>
+    <h2>🔥 Trending</h2>
+    <div id="trendingMovies" class="movie-grid"></div>
   </section>
 
-  <!-- Search History -->
+  <!-- Recently Viewed -->
   <section class="section">
-    <h2>Search History</h2>
-    <ul id="searchHistory"></ul>
+    <h2>👀 Recently Viewed</h2>
+    <div id="recentMovies" class="movie-grid"></div>
+  </section>
+
+  <!-- Search Result -->
+  <section class="section">
+    <h2>🔎 Search Results</h2>
+    <div id="searchResults" class="movie-grid"></div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
-    <a href="favorites.html">❤️ Favorites</a>
+    <p>© 2026 FastStream</p>
   </footer>
 
   <!-- JS -->
   <script src="js/main.js"></script>
-
 </body>
 </html>
